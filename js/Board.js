@@ -1,5 +1,4 @@
-class Board {
-    static #CLASS_BOARD = 'board';
+class Board extends Array {
     static #ELEMENT_CELL = 'td';
     static #ELEMENT_ROW = 'tr';
     static #ELEMENT_TABLE = 'table';
@@ -8,6 +7,7 @@ class Board {
 
 
     constructor(size) {
+        super(size);
         const table = document.createElement(Board.#ELEMENT_TABLE);
         const headerRow = document.createElement(Board.#ELEMENT_ROW);
         headerRow.appendChild(document.createElement(Board.#ELEMENT_CELL));
@@ -19,15 +19,13 @@ class Board {
         headerRow.appendChild(document.createElement(Board.#ELEMENT_CELL));
         table.appendChild(headerRow);
         for (let i = 0; i < size; i++) {
+            this[i] = new Array(size);
             const row = document.createElement(Board.#ELEMENT_ROW);
             const headerColumn = document.createElement(Board.#ELEMENT_CELL);
             headerColumn.appendChild(document.createTextNode(Board.#FORMAT_ROW(i)));
             row.appendChild(headerColumn);
             for (let j = 0; j < size; j++) {
-                // TODO square
-                const cell = document.createElement(Board.#ELEMENT_CELL);
-                cell.classList.add(Board.#CLASS_BOARD);
-                row.appendChild(cell);
+                this[i][j] = new Square(row);
             }
             const footerColumn = document.createElement(Board.#ELEMENT_CELL);
             footerColumn.appendChild(document.createTextNode(Board.#FORMAT_ROW(i)));
