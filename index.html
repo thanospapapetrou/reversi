@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Reversi</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="./css/reversi.css" />
+        <script src="./js/Board.js"></script>
+        <script src="./js/Reversi.js"></script>
+    </head>
+    <body onload="Reversi.main();">
+        <h1>Reversi</h1>
+        <form action="./index.html">
+            <label for="variation">Variation:</label>
+            <select id="variation" name="variation">
+                <option value="REVERSI">Reversi</option>
+                <option value="OTHELLO">Othello</option>
+            </select>
+            <label for="difficulty">Difficulty:</label>
+            <select id="difficulty" name="difficulty">
+                <option value="EASY">Easy</option>
+                <option value="HARD">Hard</option>
+            </select>
+            <br />
+            <input type="submit" value="Start" autofocus="autofocus" />
+        </form>
+    </body>
+</html>
