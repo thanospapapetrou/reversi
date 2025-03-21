@@ -1,4 +1,4 @@
 const Color = Object.freeze({
-    BLACK: 'Black',
-    WHITE: 'White'
+    BLACK: 'black',
+    WHITE: 'white'
 });

@@ -11,11 +11,11 @@ td {
     vertical-align: middle;
     width: 25px;
     height: 25px;
-    color: Black;
+    color: black;
     cursor: default;
 }
 
 td.board {
-    background-color: Green;
-    border: 1px solid Black;
+    background-color: green;
+    border: 1px solid black;
 }
