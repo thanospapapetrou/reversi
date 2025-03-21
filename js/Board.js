@@ -5,7 +5,6 @@ class Board extends Array {
     static #FORMAT_COLUMN = (column) => String.fromCharCode('a'.charCodeAt(0) + column);
     static #FORMAT_ROW = (row) => (row + 1).toString();
 
-
     constructor(size) {
         super(size);
         const table = document.createElement(Board.#ELEMENT_TABLE);

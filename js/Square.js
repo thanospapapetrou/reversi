@@ -11,11 +11,11 @@ class Square {
         parent.appendChild(this.#cell);
     }
 
-    get disc() {
+    get disk() {
         return Object.values(Color).find((color) => color == this.#cell.style.color);
     }
 
-    set disc(color) {
+    set disk(color) {
         this.#cell.firstChild || this.#cell.appendChild(document.createTextNode(Square.#DISC));
         this.#cell.style.color = color;
     }
