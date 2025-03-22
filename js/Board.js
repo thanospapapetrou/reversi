@@ -42,4 +42,57 @@ class Board extends Array {
         table.appendChild(footerRow);
         document.body.appendChild(table);
     }
+
+    capture(row, column, color) {
+        const result = [];
+        north: for (let i = row - 2; i >= 0; i--) {
+            if (this[i][column].disk == color) {
+                const captures = [];
+                for (let k = row - 1; k > i; k--) {
+                    if ((this[k][column].disk == null) || (this[k][column].disk == color)) {
+                        break north;
+                    }
+                    captures.push({row: k, column});
+                }
+                result.push(...captures);
+            }
+        }
+        east: for (let j = column + 2; j < this[row].length; j++) {
+            if (this[row][j].disk == color) {
+                const captures = [];
+                for (let k = column + 1; k < j; k++) {
+                    if ((this[row][k].disk == null) || (this[row][k].disk == color)) {
+                        break east;
+                    }
+                    captures.push({row, column: k});
+                }
+                result.push(...captures);
+            }
+        }
+        south: for (let i = row + 2; i < this.length; i++) {
+            if (this[i][column].disk == color) {
+                const captures = [];
+                for (let k = row + 1; k < i; k++) {
+                    if ((this[k][column].disk == null) || (this[k][column].disk == color)) {
+                        break south;
+                    }
+                    captures.push({row: k, column});
+                }
+                result.push(...captures);
+            }
+        }
+        west: for (let j = column - 2; j >= 0; j--) {
+            if (this[row][j].disk == color) {
+                const captures = [];
+                for (let k = column - 1; k > j; k--) {
+                    if ((this[row][k].disk == null) || (this[row][k].disk == color)) {
+                        break west;
+                    }
+                    captures.push({row, column: k});
+                }
+                result.push(...captures);
+            }
+        }
+        return result;
+    }
 }

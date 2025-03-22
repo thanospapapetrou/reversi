@@ -12,7 +12,7 @@ class Square {
     }
 
     get disk() {
-        return Object.values(Color).find((color) => color == this.#cell.style.color);
+        return Object.values(Color).find((color) => color == this.#cell.style.color) || null;
     }
 
     set disk(color) {
