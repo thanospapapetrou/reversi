@@ -75,6 +75,18 @@ class Board extends Array {
                 result.push(...captures);
             }
         }
+        northEast: for (let i = row - 2, j = column + 2; (i >= 0) && (j < this[i].length); i--, j++) {
+            if (this[i][j].disk == color) {
+                const captures = [];
+                for (let k = row - 1, l = column + 1; (k > i) && (l < j); k--, l++) {
+                    if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
+                        break northEast;
+                    }
+                    captures.push({row: k, column: l});
+                }
+                result.push(...captures);
+            }
+        }
         east: for (let j = column + 2; j < this[row].length; j++) {
             if (this[row][j].disk == color) {
                 const captures = [];
@@ -83,6 +95,18 @@ class Board extends Array {
                         break east;
                     }
                     captures.push({row, column: k});
+                }
+                result.push(...captures);
+            }
+        }
+        southEast: for (let i = row + 2, j = column + 2; (i < this.length) && (j < this[i].length); i++, j++) {
+            if (this[i][j].disk == color) {
+                const captures = [];
+                for (let k = row + 1, l = column + 1; (k < i) && (l < j); k++, l++) {
+                    if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
+                        break southEast;
+                    }
+                    captures.push({row: k, column: l});
                 }
                 result.push(...captures);
             }
@@ -99,6 +123,18 @@ class Board extends Array {
                 result.push(...captures);
             }
         }
+        southWest: for (let i = row + 2, j = column - 2; (i < this.length) && (j >= 0); i++, j--) {
+            if (this[i][j].disk == color) {
+                const captures = [];
+                for (let k = row + 1, l = column - 1; (k < i) && (l > j); k++, l--) {
+                    if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
+                        break southWest;
+                    }
+                    captures.push({row: k, column: l});
+                }
+                result.push(...captures);
+            }
+        }
         west: for (let j = column - 2; j >= 0; j--) {
             if (this[row][j].disk == color) {
                 const captures = [];
@@ -107,6 +143,18 @@ class Board extends Array {
                         break west;
                     }
                     captures.push({row, column: k});
+                }
+                result.push(...captures);
+            }
+        }
+        northWest: for (let i = row - 2, j = column - 2; (i >= 0) && (j >= 0); i--, j--) {
+            if (this[i][j].disk == color) {
+                const captures = [];
+                for (let k = row - 1, l = column - 1; (k > i) && (l > j); k--, l--) {
+                    if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
+                        break northWest;
+                    }
+                    captures.push({row: k, column: l});
                 }
                 result.push(...captures);
             }
