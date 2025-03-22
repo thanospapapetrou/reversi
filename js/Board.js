@@ -43,7 +43,25 @@ class Board extends Array {
         document.body.appendChild(table);
     }
 
-    capture(row, column, color) {
+    ply(color) {
+        for (let i = 0; i < this.length; i++) {
+            for (let j = 0; j < this[i].length; j++) {
+                const captures = this.#capture(i, j, color);
+                (captures.length > 0) ? this[i][j].enable((event) => {
+                    for (let capture of captures) {
+                        this[capture.row][capture.column].disk = color;
+                    }
+                    this[i][j].disk = color;
+                    this.ply((color == Color.BLACK) ? Color.WHITE : Color.BLACK);
+                }) : this[i][j].disable();
+            }
+        }
+    }
+
+    #capture(row, column, color) {
+        if (this[row][column].disk != null) {
+            return [];
+        }
         const result = [];
         north: for (let i = row - 2; i >= 0; i--) {
             if (this[i][column].disk == color) {
