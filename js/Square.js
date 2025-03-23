@@ -1,5 +1,7 @@
 class Square {
     static #CLASS_BOARD = 'board';
+    static #CURSOR_NOT_ALLOWED = 'not-allowed';
+    static #CURSOR_POINTER = 'pointer';
     static #ELEMENT_CELL = 'td';
 
     #cell;
@@ -20,20 +22,16 @@ class Square {
     }
 
     enable(color, captures, next) {
-        this.#cell.style.backgroundColor = 'lightgreen';
-        this.#cell.style.cursor = 'pointer';
+        this.#cell.style.cursor = Square.#CURSOR_POINTER;
         this.#cell.onclick = (event) => {
-            for (let capture of captures) {
-                capture.disk = color;
-            }
+            captures.forEach((capture) => capture.disk = color);
             this.disk = color;
             next();
         };
     }
 
     disable() {
-        this.#cell.style.backgroundColor = 'red';
-        this.#cell.style.cursor = 'not-allowed';
+        this.#cell.style.cursor = Square.#CURSOR_NOT_ALLOWED;
         this.#cell.onclick = null;
     }
 }
