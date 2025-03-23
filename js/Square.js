@@ -19,14 +19,20 @@ class Square {
         this.#cell.appendChild(document.createTextNode(color));
     }
 
-    enable(onclick) {
+    enable(color, captures, next) {
         this.#cell.style.backgroundColor = 'lightgreen';
         this.#cell.style.cursor = 'pointer';
-        this.#cell.onclick = onclick;
+        this.#cell.onclick = (event) => {
+            for (let capture of captures) {
+                capture.disk = color;
+            }
+            this.disk = color;
+            next();
+        };
     }
 
     disable() {
-        this.#cell.style.backgroundColor = 'green';
+        this.#cell.style.backgroundColor = 'red';
         this.#cell.style.cursor = 'not-allowed';
         this.#cell.onclick = null;
     }

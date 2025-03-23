@@ -47,13 +47,9 @@ class Board extends Array {
         for (let i = 0; i < this.length; i++) {
             for (let j = 0; j < this[i].length; j++) {
                 const captures = this.#capture(i, j, color);
-                (captures.length > 0) ? this[i][j].enable((event) => {
-                    for (let capture of captures) {
-                        this[capture.row][capture.column].disk = color;
-                    }
-                    this[i][j].disk = color;
-                    this.ply((color == Color.BLACK) ? Color.WHITE : Color.BLACK);
-                }) : this[i][j].disable();
+                (captures.length > 0) ? this[i][j].enable(color,
+                        captures.map((capture) => this[capture.row][capture.column]),
+                        () => this.ply((color == Color.BLACK) ? Color.WHITE : Color.BLACK)) : this[i][j].disable();
             }
         }
     }

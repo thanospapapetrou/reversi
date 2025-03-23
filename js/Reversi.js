@@ -11,6 +11,7 @@ class Reversi {
     static #SELECTOR_VARIANT = 'select#variant';
     static #SIZE = 8;
 
+    #variant;
     #board;
 
     static main() {
@@ -26,7 +27,7 @@ class Reversi {
         if ((variant != null) && (mode != null)
                 && ((Mode[mode] == Mode.TWO_PLAYERS) || ((color != null) && (difficulty != null)))) {
             document.querySelector(Reversi.#SELECTOR_FORM).style.display = Reversi.#DISPLAY_NONE;
-            new Reversi(Variant[variant], Mode[mode], Color[color], Difficulty[difficulty]);
+            new Reversi(Variant[variant], Mode[mode], Color[color], Difficulty[difficulty]).initialize();
         }
     }
 
@@ -42,11 +43,11 @@ class Reversi {
     }
 
     constructor(variant, mode, color, difficulty) {
+        this.#variant = variant;
         this.#board = new Board(Reversi.#SIZE);
-        this.#board[3][3].disk = Color.WHITE;
-        this.#board[3][4].disk = Color.BLACK;
-        this.#board[4][3].disk = Color.BLACK;
-        this.#board[4][4].disk = Color.WHITE;
-        this.#board.ply(Color.BLACK);
+    }
+
+    initialize() {
+        this.#variant(this.#board, Color.BLACK, () => this.#board.ply(Color.BLACK));
     }
 }
