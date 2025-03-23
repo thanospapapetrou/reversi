@@ -9,25 +9,28 @@
         <link rel="stylesheet" href="./css/reversi.css" />
         <script src="./js/Board.js"></script>
         <script src="./js/Color.js"></script>
+        <script src="./js/Difficulty.js"></script>
+        <script src="./js/Mode.js"></script>
         <script src="./js/Reversi.js"></script>
         <script src="./js/Square.js"></script>
+        <script src="./js/Variant.js"></script>
     </head>
     <body onload="Reversi.main();">
         <h1>Reversi</h1>
         <form action="./index.html">
-            <label for="variation">Variation:</label>
-            <select id="variation" name="variation">
+            <label for="variant">Variant:</label>
+            <select id="variant" name="variant">
                 <option value="REVERSI">Reversi</option>
                 <option value="OTHELLO">Othello</option>
             </select>
             <br />
             <label for="mode">Mode:</label>
-            <select id="mode" name="mode">
+            <select id="mode" name="mode" onchange="Reversi.toggleColorDifficulty();">
                 <option value="SINGLE_PLAYER">Single Player</option>
                 <option value="TWO_PLAYERS">Two Players</option>
             </select>
             <br />
-            <label for="color">Difficulty:</label>
+            <label for="color">Color:</label>
             <select id="color" name="color">
                 <option value="BLACK">⚫ Black</option>
                 <option value="WHITE">⚪ White</option>
