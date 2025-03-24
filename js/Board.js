@@ -63,24 +63,25 @@ class Board extends Array {
         next();
     }
 
-    ply(mode, c, color) { // TODO rename c to color and color to ply
-        if ((mode == Mode.SINGLE_PLAYER) && (c != color)) { // TODO simplify
+    ply(mode, color, ply) {
+        const next = (ply == Color.BLACK) ? Color.WHITE : Color.BLACK;
+        if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) { // TODO simplify
             for (let i = 0; i < this.length; i++) {
                 for (let j = 0; j < this[i].length; j++) {
-                    const captures = this.#capture(i, j, color);
+                    const captures = this.#capture(i, j, ply);
                     if (captures.length > 0) {
-                        captures.forEach((capture) => capture.disk = color); // TODO move to square? It's common with enable
-                        this[i][j].disk = color;
-                        return this.ply(mode, c, (color == Color.BLACK) ? Color.WHITE : Color.BLACK);
+                        captures.forEach((capture) => capture.disk = ply); // TODO move to square? It's common with enable
+                        this[i][j].disk = ply;
+                        return this.ply(mode, color, next);
                     }
                 }
             }
         } else {
             for (let i = 0; i < this.length; i++) {
                 for (let j = 0; j < this[i].length; j++) {
-                    const captures = this.#capture(i, j, color);
-                    (captures.length > 0) ? this[i][j].enable(color, captures,
-                            () => this.ply(mode, c, (color == Color.BLACK) ? Color.WHITE : Color.BLACK)) : this[i][j].disable();
+                    const captures = this.#capture(i, j, ply);
+                    (captures.length > 0) ? this[i][j].enable(ply, captures,
+                            () => this.ply(mode, color, next)) : this[i][j].disable();
                 }
             }
         }
