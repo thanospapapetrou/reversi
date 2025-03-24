@@ -94,98 +94,98 @@ class Board extends Array {
         const result = [];
         north: for (let i = row - 2; i >= 0; i--) {
             if (this[i][column].disk == color) {
-                const captures = [];
+                const captives = [];
                 for (let k = row - 1; k > i; k--) {
                     if ((this[k][column].disk == null) || (this[k][column].disk == color)) {
                         break north;
                     }
-                    captures.push(this[k][column]);
+                    captives.push(this[k][column]);
                 }
-                result.push(...captures);
+                result.push(...captives);
             }
         }
         northEast: for (let i = row - 2, j = column + 2; (i >= 0) && (j < this[i].length); i--, j++) {
             if (this[i][j].disk == color) {
-                const captures = [];
+                const captives = [];
                 for (let k = row - 1, l = column + 1; (k > i) && (l < j); k--, l++) {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break northEast;
                     }
-                    captures.push(this[k][l]);
+                    captives.push(this[k][l]);
                 }
-                result.push(...captures);
+                result.push(...captives);
             }
         }
         east: for (let j = column + 2; j < this[row].length; j++) {
             if (this[row][j].disk == color) {
-                const captures = [];
+                const captives = [];
                 for (let k = column + 1; k < j; k++) {
                     if ((this[row][k].disk == null) || (this[row][k].disk == color)) {
                         break east;
                     }
-                    captures.push(this[row][k]);
+                    captives.push(this[row][k]);
                 }
-                result.push(...captures);
+                result.push(...captives);
             }
         }
         southEast: for (let i = row + 2, j = column + 2; (i < this.length) && (j < this[i].length); i++, j++) {
             if (this[i][j].disk == color) {
-                const captures = [];
+                const captives = [];
                 for (let k = row + 1, l = column + 1; (k < i) && (l < j); k++, l++) {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break southEast;
                     }
-                    captures.push(this[k][l]);
+                    captives.push(this[k][l]);
                 }
-                result.push(...captures);
+                result.push(...captives);
             }
         }
         south: for (let i = row + 2; i < this.length; i++) {
             if (this[i][column].disk == color) {
-                const captures = [];
+                const captives = [];
                 for (let k = row + 1; k < i; k++) {
                     if ((this[k][column].disk == null) || (this[k][column].disk == color)) {
                         break south;
                     }
-                    captures.push(this[k][column]);
+                    captives.push(this[k][column]);
                 }
-                result.push(...captures);
+                result.push(...captives);
             }
         }
         southWest: for (let i = row + 2, j = column - 2; (i < this.length) && (j >= 0); i++, j--) {
             if (this[i][j].disk == color) {
-                const captures = [];
+                const captives = [];
                 for (let k = row + 1, l = column - 1; (k < i) && (l > j); k++, l--) {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break southWest;
                     }
-                    captures.push(this[k][l]);
+                    captives.push(this[k][l]);
                 }
-                result.push(...captures);
+                result.push(...captives);
             }
         }
         west: for (let j = column - 2; j >= 0; j--) {
             if (this[row][j].disk == color) {
-                const captures = [];
+                const captives = [];
                 for (let k = column - 1; k > j; k--) {
                     if ((this[row][k].disk == null) || (this[row][k].disk == color)) {
                         break west;
                     }
-                    captures.push(this[row][k]);
+                    captives.push(this[row][k]);
                 }
-                result.push(...captures);
+                result.push(...captives);
             }
         }
         northWest: for (let i = row - 2, j = column - 2; (i >= 0) && (j >= 0); i--, j--) {
             if (this[i][j].disk == color) {
-                const captures = [];
+                const captives = [];
                 for (let k = row - 1, l = column - 1; (k > i) && (l > j); k--, l--) {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break northWest;
                     }
-                    captures.push(this[k][l]);
+                    captives.push(this[k][l]);
                 }
-                result.push(...captures);
+                result.push(...captives);
             }
         }
         return result;
