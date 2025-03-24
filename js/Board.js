@@ -43,7 +43,7 @@ class Board extends Array {
         document.body.appendChild(table);
     }
 
-    reversi(color, next) {
+    reversi(color, next) { // TODO reversi for single player
         const center = this.flatMap((row, i) => row.filter((square, j) => (Math.floor(this.length / 2) - 1 <= i)
                 && (i < Math.floor(this.length / 2) + 1) && (Math.floor(this[i].length / 2) - 1 <= j)
                 && (j < Math.floor(this[i].length / 2) + 1) && (this[i][j].disk == null)));
@@ -63,13 +63,25 @@ class Board extends Array {
         next();
     }
 
-    ply(color) {
-        for (let i = 0; i < this.length; i++) {
-            for (let j = 0; j < this[i].length; j++) {
-                const captures = this.#capture(i, j, color);
-                (captures.length > 0) ? this[i][j].enable(color, captures.map((capture) =>
-                        this[capture.row][capture.column]), () => this.ply((color == Color.BLACK) ? Color.WHITE
-                        : Color.BLACK)) : this[i][j].disable();
+    ply(mode, c, color) { // TODO rename c to color and color to ply
+        if ((mode == Mode.SINGLE_PLAYER) && (c != color)) { // TODO simplify
+            for (let i = 0; i < this.length; i++) {
+                for (let j = 0; j < this[i].length; j++) {
+                    const captures = this.#capture(i, j, color);
+                    if (captures.length > 0) {
+                        captures.forEach((capture) => capture.disk = color); // TODO move to square? It's common with enable
+                        this[i][j].disk = color;
+                        return this.ply(mode, c, (color == Color.BLACK) ? Color.WHITE : Color.BLACK);
+                    }
+                }
+            }
+        } else {
+            for (let i = 0; i < this.length; i++) {
+                for (let j = 0; j < this[i].length; j++) {
+                    const captures = this.#capture(i, j, color);
+                    (captures.length > 0) ? this[i][j].enable(color, captures,
+                            () => this.ply(mode, c, (color == Color.BLACK) ? Color.WHITE : Color.BLACK)) : this[i][j].disable();
+                }
             }
         }
     }
@@ -86,7 +98,7 @@ class Board extends Array {
                     if ((this[k][column].disk == null) || (this[k][column].disk == color)) {
                         break north;
                     }
-                    captures.push({row: k, column});
+                    captures.push(this[k][column]);
                 }
                 result.push(...captures);
             }
@@ -98,7 +110,7 @@ class Board extends Array {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break northEast;
                     }
-                    captures.push({row: k, column: l});
+                    captures.push(this[k][l]);
                 }
                 result.push(...captures);
             }
@@ -110,7 +122,7 @@ class Board extends Array {
                     if ((this[row][k].disk == null) || (this[row][k].disk == color)) {
                         break east;
                     }
-                    captures.push({row, column: k});
+                    captures.push(this[row][k]);
                 }
                 result.push(...captures);
             }
@@ -122,7 +134,7 @@ class Board extends Array {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break southEast;
                     }
-                    captures.push({row: k, column: l});
+                    captures.push(this[k][l]);
                 }
                 result.push(...captures);
             }
@@ -134,7 +146,7 @@ class Board extends Array {
                     if ((this[k][column].disk == null) || (this[k][column].disk == color)) {
                         break south;
                     }
-                    captures.push({row: k, column});
+                    captures.push(this[k][column]);
                 }
                 result.push(...captures);
             }
@@ -146,7 +158,7 @@ class Board extends Array {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break southWest;
                     }
-                    captures.push({row: k, column: l});
+                    captures.push(this[k][l]);
                 }
                 result.push(...captures);
             }
@@ -158,7 +170,7 @@ class Board extends Array {
                     if ((this[row][k].disk == null) || (this[row][k].disk == color)) {
                         break west;
                     }
-                    captures.push({row, column: k});
+                    captures.push(this[row][k]);
                 }
                 result.push(...captures);
             }
@@ -170,7 +182,7 @@ class Board extends Array {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break northWest;
                     }
-                    captures.push({row: k, column: l});
+                    captures.push(this[k][l]);
                 }
                 result.push(...captures);
             }

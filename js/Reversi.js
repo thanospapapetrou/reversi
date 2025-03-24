@@ -12,6 +12,8 @@ class Reversi {
     static #SIZE = 8;
 
     #variant;
+    #mode;
+    #color;
     #board;
 
     static main() {
@@ -44,10 +46,12 @@ class Reversi {
 
     constructor(variant, mode, color, difficulty) {
         this.#variant = variant;
+        this.#mode = mode;
+        this.#color = color;
         this.#board = new Board(Reversi.#SIZE);
     }
 
     initialize() {
-        this.#variant(this.#board, Color.BLACK, () => this.#board.ply(Color.BLACK));
+        this.#variant(this.#board, Color.BLACK, () => this.#board.ply(this.#mode, this.#color, Color.BLACK));
     }
 }
