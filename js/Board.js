@@ -48,8 +48,10 @@ class Board extends Array {
                 && (i < Math.floor(this.length / 2) + 1) && (Math.floor(this[i].length / 2) - 1 <= j)
                 && (j < Math.floor(this[i].length / 2) + 1) && (this[i][j].disk == null)));
         (center.length > 0) ? this.forEach((row) => row.forEach((square) => center.includes(square)
-                ? square.enable(color, [], () => this.reversi((color == Color.BLACK) ? Color.WHITE : Color.BLACK,
-                next)) : square.disable())) : next();
+                ? square.enable((event) => {
+                    square.disk = color;
+                    this.reversi((color == Color.BLACK) ? Color.WHITE : Color.BLACK, next);
+                }) : square.disable())) : next();
     }
 
     othello(color, next) {
@@ -80,8 +82,12 @@ class Board extends Array {
             for (let i = 0; i < this.length; i++) {
                 for (let j = 0; j < this[i].length; j++) {
                     const captures = this.#capture(i, j, ply);
-                    (captures.length > 0) ? this[i][j].enable(ply, captures,
-                            () => this.ply(mode, color, next)) : this[i][j].disable();
+                    (captures.length > 0) ? this[i][j].enable(
+                    (event) => {
+                        this[i][j].disk = ply;
+                        captures.forEach((capture) => capture.disk = ply);
+                        this.ply(mode, color, next);
+                    }) : this[i][j].disable();
                 }
             }
         }

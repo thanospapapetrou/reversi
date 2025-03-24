@@ -21,13 +21,9 @@ class Square {
         this.#cell.appendChild(document.createTextNode(color));
     }
 
-    enable(color, captures, next) {
+    enable(action) {
         this.#cell.style.cursor = Square.#CURSOR_POINTER;
-        this.#cell.onclick = (event) => {
-            captures.forEach((capture) => capture.disk = color);
-            this.disk = color;
-            next();
-        };
+        this.#cell.onclick = action;
     }
 
     disable() {
