@@ -72,8 +72,7 @@ class Board extends Array {
                 for (let j = 0; j < this[i].length; j++) {
                     const captures = this.#capture(i, j, ply);
                     if (captures.length > 0) {
-                        captures.forEach((capture) => capture.disk = ply); // TODO move to square? It's common with enable
-                        this[i][j].disk = ply;
+                        this.#play(i, j, ply);
                         return this.ply(mode, color, next);
                     }
                 }
@@ -82,15 +81,18 @@ class Board extends Array {
             for (let i = 0; i < this.length; i++) {
                 for (let j = 0; j < this[i].length; j++) {
                     const captures = this.#capture(i, j, ply);
-                    (captures.length > 0) ? this[i][j].enable(
-                    (event) => {
-                        this[i][j].disk = ply;
-                        captures.forEach((capture) => capture.disk = ply);
+                    (captures.length > 0) ? this[i][j].enable((event) => {
+                        this.#play(i, j, ply);
                         this.ply(mode, color, next);
                     }) : this[i][j].disable();
                 }
             }
         }
+    }
+
+    #play(row, column, color) {
+        this[row][column].disk = color;
+        this.#capture(row, column, color).forEach((captive) => captive.disk = color);
     }
 
     #capture(row, column, color) {
