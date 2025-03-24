@@ -43,6 +43,26 @@ class Board extends Array {
         document.body.appendChild(table);
     }
 
+    reversi(color, next) {
+        const center = this.flatMap((row, i) => row.filter((square, j) => (Math.floor(this.length / 2) - 1 <= i)
+                && (i < Math.floor(this.length / 2) + 1) && (Math.floor(this[i].length / 2) - 1 <= j)
+                && (j < Math.floor(this[i].length / 2) + 1) && (this[i][j].disk == null)));
+        (center.length > 0) ? this.forEach((row) => row.forEach((square) => center.includes(square)
+                ? square.enable(color, [], () => this.reversi((color == Color.BLACK) ? Color.WHITE : Color.BLACK,
+                next)) : square.disable())) : next();
+    }
+
+    othello(color, next) {
+        const centerRow = Math.floor(this.length / 2);
+        for (let i = centerRow - 1; i < centerRow + 1; i++) {
+            const centerColumn = Math.floor(this[i].length / 2);
+            for (let j = centerColumn - 1; j < centerColumn + 1; j++) {
+                this[i][j].disk = Object.values(Color)[(i + j + 1) % 2];
+            }
+        }
+        next();
+    }
+
     ply(color) {
         for (let i = 0; i < this.length; i++) {
             for (let j = 0; j < this[i].length; j++) {
