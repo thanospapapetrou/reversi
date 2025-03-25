@@ -14,12 +14,12 @@ class Square {
     }
 
     get disk() {
-        return Object.values(Color).find((color) => color == this.#cell.firstChild?.nodeValue) || null;
+        return Object.values(Color).find((color) => color.disk == this.#cell.firstChild?.nodeValue) || null;
     }
 
     set disk(color) {
         this.#cell.firstChild && this.#cell.removeChild(this.#cell.firstChild);
-        this.#cell.appendChild(document.createTextNode(color));
+        this.#cell.appendChild(document.createTextNode(color.disk));
     }
 
     enable(action) {

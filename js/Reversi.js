@@ -1,4 +1,7 @@
 class Reversi {
+    static FORMAT_COLUMN = (column) => String.fromCharCode('a'.charCodeAt(0) + column);
+    static FORMAT_ROW = (row) => (row + 1).toString();
+
     static #DISPLAY_NONE = 'none';
     static #PARAMETER_COLOR = 'color';
     static #PARAMETER_DIFFICULTY = 'difficulty';
@@ -10,11 +13,14 @@ class Reversi {
     static #SELECTOR_MODE = 'select#mode';
     static #SELECTOR_VARIANT = 'select#variant';
     static #SIZE = 8;
+    // TODO timer
+    // TODO constants cleanup
 
     #variant;
     #mode;
     #color;
     #board;
+    #log;
 
     static main() {
         const variant = Reversi.#getParameter(Reversi.#PARAMETER_VARIANT, Variant);
@@ -49,9 +55,10 @@ class Reversi {
         this.#mode = mode;
         this.#color = color;
         this.#board = new Board(Reversi.#SIZE);
+        this.#log = new Log();
     }
 
     initialize() {
-        this.#variant(this.#board, Color.BLACK, () => this.#board.ply(this.#mode, this.#color, Color.BLACK));
+        this.#variant(this.#board, Color.BLACK, () => this.#board.ply(this.#mode, this.#color, Color.BLACK, this.#log));
     }
 }

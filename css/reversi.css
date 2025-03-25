@@ -4,6 +4,7 @@ body {
 
 table {
     border-collapse: collapse;
+    float: left;
 }
 
 td {
@@ -18,4 +19,8 @@ td {
 td.board {
     background-color: green;
     border: 1px solid black;
+}
+
+textarea {
+    float: left;
 }
