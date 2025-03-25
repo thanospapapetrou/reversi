@@ -59,6 +59,6 @@ class Reversi {
     }
 
     initialize() {
-        this.#variant(this.#board, Color.BLACK, () => this.#board.ply(this.#mode, this.#color, Color.BLACK, this.#log));
+        this.#variant(this.#board, this.#log, Color.BLACK, () => this.#board.ply(this.#mode, this.#color, Color.BLACK, this.#log));
     }
 }

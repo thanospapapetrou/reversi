@@ -43,15 +43,14 @@ class Board extends Array {
         document.body.appendChild(table);
     }
 
-    reversi(color, next) { // TODO reversi for single player
-        // TODO log moves
+    reversi(log, color, next) { // TODO reversi for single player
         const center = this.flatMap((row, i) => row.filter((square, j) => (Math.floor(this.length / 2) - 1 <= i)
                 && (i < Math.floor(this.length / 2) + 1) && (Math.floor(this[i].length / 2) - 1 <= j)
                 && (j < Math.floor(this[i].length / 2) + 1) && (this[i][j].disk == null)));
-        (center.length > 0) ? this.forEach((row) => row.forEach((square) => center.includes(square)
+        (center.length > 0) ? this.forEach((row, i) => row.forEach((square, j) => center.includes(square)
                 ? square.enable((event) => {
-                    square.disk = color;
-                    this.reversi((color == Color.BLACK) ? Color.WHITE : Color.BLACK, next);
+                    this.#play(i, j, color, log);
+                    this.reversi(log, (color == Color.BLACK) ? Color.WHITE : Color.BLACK, next);
                 }) : square.disable())) : next();
     }
 
@@ -73,9 +72,9 @@ class Board extends Array {
         if (captives.length == 0) {
             if (this.flatMap((row, i) => row.map((square, j) => ({i, j})))
                     .filter(({i, j}) => this.#capture(i, j, next).length > 0).length == 0) {
-                    console.log(`THE END`); // TODO log score
+                    log.logScore(this.#score(Color.BLACK), this.#score(Color.WHITE));
             } else {
-                log.log(null, null, ply);
+                log.logMove(null, null, ply);
                 this.ply(mode, color, next, log);
             }
         } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
@@ -96,7 +95,11 @@ class Board extends Array {
     #play(row, column, color, log) {
         this.#capture(row, column, color).forEach((captive) => captive.disk = color);
         this[row][column].disk = color;
-        log.log(row, column, color);
+        log.logMove(row, column, color);
+    }
+
+    #score(color) {
+        return this.map((row) => row.filter((square) => square.disk == color).length).reduce((a, b) => a + b, 0);
     }
 
     #capture(row, column, color) {
