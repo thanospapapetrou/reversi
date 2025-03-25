@@ -2,6 +2,7 @@ class Square {
     static #CLASS_BOARD = 'board';
     static #CURSOR_NOT_ALLOWED = 'not-allowed';
     static #CURSOR_POINTER = 'pointer';
+    static #CURSOR_WAIT = 'wait';
     static #ELEMENT_CELL = 'td';
 
     #cell;
@@ -28,6 +29,11 @@ class Square {
 
     disable() {
         this.#cell.style.cursor = Square.#CURSOR_NOT_ALLOWED;
+        this.#cell.onclick = null;
+    }
+
+    busy() {
+        this.#cell.style.cursor = Square.#CURSOR_WAIT;
         this.#cell.onclick = null;
     }
 }

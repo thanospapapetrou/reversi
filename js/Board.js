@@ -66,33 +66,36 @@ class Board extends Array {
     }
 
     ply(mode, color, ply) {
+        const captives = this.flatMap((row, i) => row.map((square, j) => ({i, j})))
+                .filter(({i, j}) => this.#capture(i, j, ply).length > 0);
         const next = (ply == Color.BLACK) ? Color.WHITE : Color.BLACK;
-        if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) { // TODO simplify
-            for (let i = 0; i < this.length; i++) {
-                for (let j = 0; j < this[i].length; j++) {
-                    const captures = this.#capture(i, j, ply);
-                    if (captures.length > 0) {
-                        this.#play(i, j, ply);
-                        return this.ply(mode, color, next);
-                    }
-                }
+        if (captives.length == 0) {
+            if (this.flatMap((row, i) => row.map((square, j) => ({i, j})))
+                    .filter(({i, j}) => this.#capture(i, j, next).length > 0).length == 0) {
+                    console.log(`THE END`);
+            } else {
+                console.log('Pass'); // TODO fix this and others console.log()
+                this.ply(mode, color, next);
             }
+        } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
+            this.forEach((row) => row.forEach((square) => square.busy()));
+            this.#play(captives[0].i, captives[0].j, ply);
+            this.ply(mode, color, next);
         } else {
-            for (let i = 0; i < this.length; i++) {
-                for (let j = 0; j < this[i].length; j++) {
-                    const captures = this.#capture(i, j, ply);
-                    (captures.length > 0) ? this[i][j].enable((event) => {
-                        this.#play(i, j, ply);
-                        this.ply(mode, color, next);
-                    }) : this[i][j].disable();
-                }
-            }
+            this.forEach((row) => row.forEach((square) => square.disable()));
+            captives.forEach(({i, j}) => {
+                this[i][j].enable((event) => {
+                    this.#play(i, j, ply);
+                    this.ply(mode, color, next);
+                });
+            });
         }
     }
 
     #play(row, column, color) {
-        this[row][column].disk = color;
         this.#capture(row, column, color).forEach((captive) => captive.disk = color);
+        this[row][column].disk = color;
+        console.log(`${Board.#FORMAT_ROW(row)}${Board.#FORMAT_COLUMN(column)}`);
     }
 
     #capture(row, column, color) {
