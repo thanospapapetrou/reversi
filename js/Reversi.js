@@ -60,10 +60,16 @@ class Reversi {
 
     initialize() {
         this.#log.logVariant(this.#variant);
-        this.#variant.initialize(this.#board, this.#log, Color.BLACK, () => {
+        this.#variant.initialize(this, this.#board, Color.BLACK, () => {
             // TODO start timer
             this.ply(this.#mode, this.#color, Color.BLACK);
         });
+    }
+
+    play(row, column, color) {
+        this.#board.capture(row, column, color).forEach((captive) => captive.disk = color);
+        this.#board[row][column].disk = color;
+        this.#log.logPly(row, column, color);
     }
 
     ply(mode, color, ply) {
@@ -91,13 +97,13 @@ class Reversi {
             }
         } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
             this.#board.forEach((row) => row.forEach((square) => square.busy()));
-            this.#board.play(captives[0].i, captives[0].j, ply, this.#log);
+            this.play(captives[0].i, captives[0].j, ply);
             this.ply(mode, color, next);
         } else {
             this.#board.forEach((row) => row.forEach((square) => square.disable()));
             captives.forEach(({i, j}) => {
                 this.#board[i][j].enable((event) => {
-                    this.#board.play(i, j, ply, this.#log);
+                    this.play(i, j, ply);
                     this.ply(mode, color, next);
                 });
             });

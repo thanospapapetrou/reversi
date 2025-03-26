@@ -1,5 +1,5 @@
 const Variant = Object.freeze({
-    REVERSI: {name: 'Reversi', initialize: (board, log, color, next) => {
+    REVERSI: {name: 'Reversi', initialize: (reversi, board, color, next) => {
         // TODO reversi for single player
         const center = [];
         for (let i = 0; i < board.length; i++) {
@@ -11,11 +11,11 @@ const Variant = Object.freeze({
         }
         (center.length > 0) ? board.forEach((row, i) => row.forEach((square, j) => center.includes(square)
                 ? square.enable((event) => {
-                    board.play(i, j, color, log);
-                    Variant.REVERSI.initialize(board, log, (color == Color.BLACK) ? Color.WHITE : Color.BLACK, next);
+                    reversi.play(i, j, color);
+                    Variant.REVERSI.initialize(reversi, board, (color == Color.BLACK) ? Color.WHITE : Color.BLACK, next);
                 }) : square.disable())) : next();
     }},
-    OTHELLO: {name: 'Othello', initialize: (board, log, color, next) => {
+    OTHELLO: {name: 'Othello', initialize: (reversi, board, color, next) => {
         const centerRow = Math.floor(board.length / 2);
         for (let i = centerRow - 1; i < centerRow + 1; i++) {
             const centerColumn = Math.floor(board[i].length / 2);
