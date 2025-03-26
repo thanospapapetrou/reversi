@@ -4,7 +4,8 @@ class Board extends Array {
     static #ELEMENT_TABLE = 'table';
     static #FORMAT_COLUMN = (column) => String.fromCharCode('a'.charCodeAt(0) + column);
     static #FORMAT_ROW = (row) => (row + 1).toString();
-
+    // TODO row -> rank
+    // TODO column -> file
     constructor(size) {
         super(size);
         const table = document.createElement(Board.#ELEMENT_TABLE);
@@ -46,7 +47,7 @@ class Board extends Array {
     play(row, column, color, log) {
         this.capture(row, column, color).forEach((captive) => captive.disk = color);
         this[row][column].disk = color;
-        log.logMove(row, column, color);
+        log.logPly(row, column, color);
     }
 
     score(color) {

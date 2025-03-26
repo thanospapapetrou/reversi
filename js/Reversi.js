@@ -86,7 +86,7 @@ class Reversi {
                     this.#log.logScore(this.#board.score(Color.BLACK), this.#board.score(Color.WHITE));
                     // TODO alert
             } else {
-                this.#log.logMove(null, null, ply);
+                this.#log.logPly(null, null, ply);
                 this.ply(mode, color, next);
             }
         } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
