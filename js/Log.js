@@ -1,7 +1,8 @@
 class Log {
     static #ELEMENT_TEXTAREA = 'textarea';
     static #FORMAT_MOVE = (row, column) => (Reversi.FORMAT_COLUMN(column) + Reversi.FORMAT_ROW(row)).padEnd(4);
-    static #FORMAT_SCORE = (black, white) => `\n${black} - ${white}`;
+    static #FORMAT_SCORE = (black, white) => `\n${black} - ${white}\n`;
+    static #FORMAT_VARIANT = (variant) => `${variant.name}\n`
     static #TEXT_PASS = 'pass';
 
     #turn;
@@ -13,6 +14,10 @@ class Log {
         this.#log = document.createTextNode('');
         textarea.appendChild(this.#log);
         document.body.appendChild(textarea);
+    }
+
+    logVariant(variant) {
+        this.#log.nodeValue += Log.#FORMAT_VARIANT(variant);
     }
 
     logMove(row, column, color) {

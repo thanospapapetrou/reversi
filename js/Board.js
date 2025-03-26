@@ -43,28 +43,6 @@ class Board extends Array {
         document.body.appendChild(table);
     }
 
-    reversi(log, color, next) { // TODO reversi for single player
-        const center = this.flatMap((row, i) => row.filter((square, j) => (Math.floor(this.length / 2) - 1 <= i)
-                && (i < Math.floor(this.length / 2) + 1) && (Math.floor(this[i].length / 2) - 1 <= j)
-                && (j < Math.floor(this[i].length / 2) + 1) && (this[i][j].disk == null)));
-        (center.length > 0) ? this.forEach((row, i) => row.forEach((square, j) => center.includes(square)
-                ? square.enable((event) => {
-                    this.#play(i, j, color, log);
-                    this.reversi(log, (color == Color.BLACK) ? Color.WHITE : Color.BLACK, next);
-                }) : square.disable())) : next();
-    }
-
-    othello(color, next) {
-        const centerRow = Math.floor(this.length / 2);
-        for (let i = centerRow - 1; i < centerRow + 1; i++) {
-            const centerColumn = Math.floor(this[i].length / 2);
-            for (let j = centerColumn - 1; j < centerColumn + 1; j++) {
-                this[i][j].disk = Object.values(Color)[(i + j + 1) % 2];
-            }
-        }
-        next();
-    }
-
     ply(mode, color, ply, log) {
         const captives = this.flatMap((row, i) => row.map((square, j) => ({i, j})))
                 .filter(({i, j}) => this.#capture(i, j, ply).length > 0);
@@ -79,20 +57,20 @@ class Board extends Array {
             }
         } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
             this.forEach((row) => row.forEach((square) => square.busy()));
-            this.#play(captives[0].i, captives[0].j, ply, log);
+            this.play(captives[0].i, captives[0].j, ply, log);
             this.ply(mode, color, next, log);
         } else {
             this.forEach((row) => row.forEach((square) => square.disable()));
             captives.forEach(({i, j}) => {
                 this[i][j].enable((event) => {
-                    this.#play(i, j, ply, log);
+                    this.play(i, j, ply, log);
                     this.ply(mode, color, next, log);
                 });
             });
         }
     }
 
-    #play(row, column, color, log) {
+    play(row, column, color, log) {
         this.#capture(row, column, color).forEach((captive) => captive.disk = color);
         this[row][column].disk = color;
         log.logMove(row, column, color);
