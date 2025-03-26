@@ -62,29 +62,29 @@ class Reversi {
         this.#log.logVariant(this.variant);
         this.variant.initialize(this, Color.BLACK, () => {
             // TODO start timer
-            this.#ply(this.mode, this.color, Color.BLACK);
+            this.#ply(Color.BLACK);
         });
     }
 
-    play(row, column, color) { // TODO are all these parameters needed?
+    play(row, column, color) {
         this.board.capture(row, column, color).forEach((captive) => captive.disk = color);
         this.board[row][column].disk = color;
         this.#log.logPly(row, column, color);
     }
 
-    #ply(mode, color, ply) { // TODO are all these parameters needed?
+    #ply(color) {
         const captives = [];
         for (let i = 0; i < this.board.length; i++) {
             for (let j = 0; j < this.board[i].length; j++) {
-                (this.board.capture(i, j, ply).length > 0) && captives.push({i, j});
+                (this.board.capture(i, j, color).length > 0) && captives.push({i, j});
             }
         }
-        const next = (ply == Color.BLACK) ? Color.WHITE : Color.BLACK;
+        const opponent = (color == Color.BLACK) ? Color.WHITE : Color.BLACK;
         if (captives.length == 0) {
             const captives = [];
             for (let i = 0; i < this.board.length; i++) {
                 for (let j = 0; j < this.board[i].length; j++) {
-                    (this.board.capture(i, j, next).length > 0) && captives.push({i, j});
+                    (this.board.capture(i, j, opponent).length > 0) && captives.push({i, j});
                 }
             }
             if (captives.length == 0) {
@@ -92,19 +92,19 @@ class Reversi {
                     this.#log.logScore(this.board.score(Color.BLACK), this.board.score(Color.WHITE));
                     // TODO alert
             } else {
-                this.#log.logPly(null, null, ply);
-                this.#ply(mode, color, next);
+                this.#log.logPly(null, null, color);
+                this.#ply(opponent);
             }
-        } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
+        } else if ((this.mode == Mode.SINGLE_PLAYER) && (this.color != color)) {
             this.board.forEach((row) => row.forEach((square) => square.busy()));
-            this.play(captives[0].i, captives[0].j, ply);
-            this.#ply(mode, color, next);
+            this.play(captives[0].i, captives[0].j, color);
+            this.#ply(opponent);
         } else {
             this.board.forEach((row) => row.forEach((square) => square.disable()));
             captives.forEach(({i, j}) => {
                 this.board[i][j].enable((event) => {
-                    this.play(i, j, ply);
-                    this.#ply(mode, color, next);
+                    this.play(i, j, color);
+                    this.#ply(opponent);
                 });
             });
         }

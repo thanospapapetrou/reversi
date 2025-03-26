@@ -22,7 +22,7 @@ class Log {
     logPly(row, column, color) {
         this.#logMessage(color.formatPly(this.#round, ((row == null) || (column == null))
             ? Log.#TEXT_PASS : Log.#FORMAT_PLY(row, column)));
-        (color == Color.BLACK) && (this.#round++);
+        (color == Color.WHITE) && (this.#round++);
     }
 
     logScore(black, white) {
