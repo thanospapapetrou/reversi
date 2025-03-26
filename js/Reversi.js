@@ -16,10 +16,10 @@ class Reversi {
     // TODO timer
     // TODO constants cleanup
 
-    #variant;
-    #mode;
-    #color;
-    #board;
+    variant;
+    mode;
+    color;
+    board;
     #log;
 
     static main() {
@@ -51,60 +51,60 @@ class Reversi {
     }
 
     constructor(variant, mode, color, difficulty) {
-        this.#variant = variant;
-        this.#mode = mode;
-        this.#color = color;
-        this.#board = new Board(Reversi.#SIZE);
+        this.variant = variant;
+        this.mode = mode;
+        this.color = color;
+        this.board = new Board(Reversi.#SIZE);
         this.#log = new Log();
     }
 
     initialize() {
-        this.#log.logVariant(this.#variant);
-        this.#variant.initialize(this, this.#board, Color.BLACK, () => {
+        this.#log.logVariant(this.variant);
+        this.variant.initialize(this, Color.BLACK, () => {
             // TODO start timer
-            this.ply(this.#mode, this.#color, Color.BLACK);
+            this.#ply(this.mode, this.color, Color.BLACK);
         });
     }
 
-    play(row, column, color) {
-        this.#board.capture(row, column, color).forEach((captive) => captive.disk = color);
-        this.#board[row][column].disk = color;
+    play(row, column, color) { // TODO are all these parameters needed?
+        this.board.capture(row, column, color).forEach((captive) => captive.disk = color);
+        this.board[row][column].disk = color;
         this.#log.logPly(row, column, color);
     }
 
-    ply(mode, color, ply) {
+    #ply(mode, color, ply) { // TODO are all these parameters needed?
         const captives = [];
-        for (let i = 0; i < this.#board.length; i++) {
-            for (let j = 0; j < this.#board[i].length; j++) {
-                (this.#board.capture(i, j, ply).length > 0) && captives.push({i, j});
+        for (let i = 0; i < this.board.length; i++) {
+            for (let j = 0; j < this.board[i].length; j++) {
+                (this.board.capture(i, j, ply).length > 0) && captives.push({i, j});
             }
         }
         const next = (ply == Color.BLACK) ? Color.WHITE : Color.BLACK;
         if (captives.length == 0) {
             const captives = [];
-            for (let i = 0; i < this.#board.length; i++) {
-                for (let j = 0; j < this.#board[i].length; j++) {
-                    (this.#board.capture(i, j, next).length > 0) && captives.push({i, j});
+            for (let i = 0; i < this.board.length; i++) {
+                for (let j = 0; j < this.board[i].length; j++) {
+                    (this.board.capture(i, j, next).length > 0) && captives.push({i, j});
                 }
             }
             if (captives.length == 0) {
                     // TODO stop timer
-                    this.#log.logScore(this.#board.score(Color.BLACK), this.#board.score(Color.WHITE));
+                    this.#log.logScore(this.board.score(Color.BLACK), this.board.score(Color.WHITE));
                     // TODO alert
             } else {
                 this.#log.logPly(null, null, ply);
-                this.ply(mode, color, next);
+                this.#ply(mode, color, next);
             }
         } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
-            this.#board.forEach((row) => row.forEach((square) => square.busy()));
+            this.board.forEach((row) => row.forEach((square) => square.busy()));
             this.play(captives[0].i, captives[0].j, ply);
-            this.ply(mode, color, next);
+            this.#ply(mode, color, next);
         } else {
-            this.#board.forEach((row) => row.forEach((square) => square.disable()));
+            this.board.forEach((row) => row.forEach((square) => square.disable()));
             captives.forEach(({i, j}) => {
-                this.#board[i][j].enable((event) => {
+                this.board[i][j].enable((event) => {
                     this.play(i, j, ply);
-                    this.ply(mode, color, next);
+                    this.#ply(mode, color, next);
                 });
             });
         }
