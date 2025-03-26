@@ -44,13 +44,24 @@ class Board extends Array {
     }
 
     ply(mode, color, ply, log) {
-        const captives = this.flatMap((row, i) => row.map((square, j) => ({i, j})))
-                .filter(({i, j}) => this.#capture(i, j, ply).length > 0);
+        const captives = [];
+        for (let i = 0; i < this.length; i++) {
+            for (let j = 0; j < this[i].length; j++) {
+                (this.#capture(i, j, ply).length > 0) && captives.push({i, j});
+            }
+        }
         const next = (ply == Color.BLACK) ? Color.WHITE : Color.BLACK;
         if (captives.length == 0) {
-            if (this.flatMap((row, i) => row.map((square, j) => ({i, j})))
-                    .filter(({i, j}) => this.#capture(i, j, next).length > 0).length == 0) {
+            const captives = [];
+            for (let i = 0; i < this.length; i++) {
+                for (let j = 0; j < this[i].length; j++) {
+                    (this.#capture(i, j, next).length > 0) && captives.push({i, j});
+                }
+            }
+            if (captives.length == 0) {
+                    // TODO stop timer
                     log.logScore(this.#score(Color.BLACK), this.#score(Color.WHITE));
+                    // TODO alert
             } else {
                 log.logMove(null, null, ply);
                 this.ply(mode, color, next, log);
@@ -77,7 +88,13 @@ class Board extends Array {
     }
 
     #score(color) {
-        return this.map((row) => row.filter((square) => square.disk == color).length).reduce((a, b) => a + b, 0);
+        let score = 0;
+        for (let i = 0; i < this.length; i++) {
+            for (let j = 0; j < this[i].length; j++) {
+                (this[i][j].disk == color) && (score++);
+            }
+        }
+        return score;
     }
 
     #capture(row, column, color) {

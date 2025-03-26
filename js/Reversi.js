@@ -15,6 +15,7 @@ class Reversi {
     static #SIZE = 8;
     // TODO timer
     // TODO constants cleanup
+    // TODO find why extra table in HTML
 
     #variant;
     #mode;
