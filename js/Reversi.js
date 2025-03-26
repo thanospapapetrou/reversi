@@ -14,6 +14,8 @@ class Reversi {
     static #SELECTOR_VARIANT = 'select#variant';
     static #SIZE = 8;
     // TODO timer
+    // TODO alphaBeta
+    // TODO highlights
 
     variant;
     mode;
@@ -31,8 +33,8 @@ class Reversi {
         (color != null) && (document.querySelector(Reversi.#SELECTOR_COLOR).value = color);
         (difficulty != null) && (document.querySelector(Reversi.#SELECTOR_DIFFICULTY).value = difficulty);
         Reversi.toggleColorDifficulty();
-        if ((variant != null) && (mode != null)
-                && ((Mode[mode] == Mode.TWO_PLAYERS) || ((color != null) && (difficulty != null)))) {
+        if ((variant != null) && (mode != null) && ((Mode[mode] == Mode.TWO_PLAYERS) || ((color != null)
+                && (difficulty != null)))) {
             document.querySelector(Reversi.#SELECTOR_FORM).style.display = Reversi.#DISPLAY_NONE;
             new Reversi(Variant[variant], Mode[mode], Color[color], Difficulty[difficulty]).initialize();
         }
