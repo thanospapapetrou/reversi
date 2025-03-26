@@ -1,14 +1,10 @@
 class Square {
     static #CLASS_BOARD = 'board';
-    static #CURSOR_NOT_ALLOWED = 'not-allowed';
-    static #CURSOR_POINTER = 'pointer';
-    static #CURSOR_WAIT = 'wait';
-    static #ELEMENT_CELL = 'td';
 
     #cell;
 
     constructor(parent) {
-        this.#cell = document.createElement(Square.#ELEMENT_CELL);
+        this.#cell = document.createElement(HtmlElement.CELL);
         this.#cell.classList.add(Square.#CLASS_BOARD);
         parent.appendChild(this.#cell);
     }
@@ -23,17 +19,17 @@ class Square {
     }
 
     enable(action) {
-        this.#cell.style.cursor = Square.#CURSOR_POINTER;
+        this.#cell.style.cursor = CssCursor.POINTER;
         this.#cell.onclick = action;
     }
 
     disable() {
-        this.#cell.style.cursor = Square.#CURSOR_NOT_ALLOWED;
+        this.#cell.style.cursor = CssCursor.NOT_ALLOWED;
         this.#cell.onclick = null;
     }
 
     busy() {
-        this.#cell.style.cursor = Square.#CURSOR_WAIT;
+        this.#cell.style.cursor = CssCursor.WAIT;
         this.#cell.onclick = null;
     }
 }

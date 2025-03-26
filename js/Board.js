@@ -1,44 +1,38 @@
 class Board extends Array {
-    static #ELEMENT_CELL = 'td';
-    static #ELEMENT_RANK = 'tr';
-    static #ELEMENT_TABLE = 'table';
-    static #FORMAT_FILE = (file) => String.fromCharCode('a'.charCodeAt(0) + file);
-    static #FORMAT_RANK = (rank) => (rank + 1).toString();
-
     constructor(size) {
         super(size);
-        const table = document.createElement(Board.#ELEMENT_TABLE);
-        const headerRank = document.createElement(Board.#ELEMENT_RANK);
-        headerRank.appendChild(document.createElement(Board.#ELEMENT_CELL));
+        const table = document.createElement(HtmlElement.TABLE);
+        const headerRank = document.createElement(HtmlElement.ROW);
+        headerRank.appendChild(document.createElement(HtmlElement.CELL));
         for (let j = 0; j < size; j++) {
-            const headerCell = document.createElement(Board.#ELEMENT_CELL);
-            headerCell.appendChild(document.createTextNode(Board.#FORMAT_FILE(j)));
+            const headerCell = document.createElement(HtmlElement.CELL);
+            headerCell.appendChild(document.createTextNode(Reversi.FORMAT_FILE(j)));
             headerRank.appendChild(headerCell);
         }
-        headerRank.appendChild(document.createElement(Board.#ELEMENT_CELL));
+        headerRank.appendChild(document.createElement(HtmlElement.CELL));
         table.appendChild(headerRank);
         for (let i = 0; i < size; i++) {
             this[i] = new Array(size);
-            const rank = document.createElement(Board.#ELEMENT_RANK);
-            const headerFile = document.createElement(Board.#ELEMENT_CELL);
-            headerFile.appendChild(document.createTextNode(Board.#FORMAT_RANK(i)));
+            const rank = document.createElement(HtmlElement.ROW);
+            const headerFile = document.createElement(HtmlElement.CELL);
+            headerFile.appendChild(document.createTextNode(Reversi.FORMAT_RANK(i)));
             rank.appendChild(headerFile);
             for (let j = 0; j < size; j++) {
                 this[i][j] = new Square(rank);
             }
-            const footerFile = document.createElement(Board.#ELEMENT_CELL);
-            footerFile.appendChild(document.createTextNode(Board.#FORMAT_RANK(i)));
+            const footerFile = document.createElement(HtmlElement.CELL);
+            footerFile.appendChild(document.createTextNode(Reversi.FORMAT_RANK(i)));
             rank.appendChild(footerFile);
             table.appendChild(rank);
         }
-        const footerRank = document.createElement(Board.#ELEMENT_RANK);
-        footerRank.appendChild(document.createElement(Board.#ELEMENT_CELL));
+        const footerRank = document.createElement(HtmlElement.ROW);
+        footerRank.appendChild(document.createElement(HtmlElement.CELL));
         for (let j = 0; j < size; j++) {
-            const footerCell = document.createElement(Board.#ELEMENT_CELL);
-            footerCell.appendChild(document.createTextNode(Board.#FORMAT_FILE(j)));
+            const footerCell = document.createElement(HtmlElement.CELL);
+            footerCell.appendChild(document.createTextNode(Reversi.FORMAT_FILE(j)));
             footerRank.appendChild(footerCell);
         }
-        footerRank.appendChild(document.createElement(Board.#ELEMENT_CELL));
+        footerRank.appendChild(document.createElement(HtmlElement.CELL));
         table.appendChild(footerRank);
         document.body.appendChild(table);
     }

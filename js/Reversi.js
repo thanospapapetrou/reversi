@@ -14,7 +14,6 @@ class Reversi {
     static #SELECTOR_VARIANT = 'select#variant';
     static #SIZE = 8;
     // TODO timer
-    // TODO constants cleanup
 
     variant;
     mode;

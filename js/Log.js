@@ -1,8 +1,9 @@
 class Log {
-    static #ELEMENT_TEXTAREA = 'textarea';
+    static #COLUMNS = 13;
     static #FORMAT_PLY = (rank, file) => (Reversi.FORMAT_FILE(file) + Reversi.FORMAT_RANK(rank)).padEnd(4);
     static #FORMAT_SCORE = (black, white) => `Score: ${black} - ${white}\n`; // TODO depending on ply, might need a new line before
     static #FORMAT_VARIANT = (variant) => `Variant: ${variant.name}\n`
+    static #ROWS = 20;
     static #TEXT_PASS = 'pass';
 
     #round;
@@ -10,7 +11,9 @@ class Log {
 
     constructor() {
         this.#round = 0;
-        this.#log = document.createElement(Log.#ELEMENT_TEXTAREA);
+        this.#log = document.createElement(HtmlElement.TEXTAREA);
+        this.#log.rows = Log.#ROWS;
+        this.#log.columns = Log.#COLUMNS;
         this.#log.appendChild(document.createTextNode(''));
         document.body.appendChild(this.#log);
     }
