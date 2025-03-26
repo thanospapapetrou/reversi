@@ -1,48 +1,45 @@
 class Board extends Array {
     static #ELEMENT_CELL = 'td';
-    static #ELEMENT_ROW = 'tr';
+    static #ELEMENT_RANK = 'tr';
     static #ELEMENT_TABLE = 'table';
-    static #FORMAT_COLUMN = (column) => String.fromCharCode('a'.charCodeAt(0) + column);
-    static #FORMAT_ROW = (row) => (row + 1).toString();
-
-    // TODO row -> rank
-    // TODO column -> file
+    static #FORMAT_FILE = (file) => String.fromCharCode('a'.charCodeAt(0) + file);
+    static #FORMAT_RANK = (rank) => (rank + 1).toString();
 
     constructor(size) {
         super(size);
         const table = document.createElement(Board.#ELEMENT_TABLE);
-        const headerRow = document.createElement(Board.#ELEMENT_ROW);
-        headerRow.appendChild(document.createElement(Board.#ELEMENT_CELL));
+        const headerRank = document.createElement(Board.#ELEMENT_RANK);
+        headerRank.appendChild(document.createElement(Board.#ELEMENT_CELL));
         for (let j = 0; j < size; j++) {
             const headerCell = document.createElement(Board.#ELEMENT_CELL);
-            headerCell.appendChild(document.createTextNode(Board.#FORMAT_COLUMN(j)));
-            headerRow.appendChild(headerCell);
+            headerCell.appendChild(document.createTextNode(Board.#FORMAT_FILE(j)));
+            headerRank.appendChild(headerCell);
         }
-        headerRow.appendChild(document.createElement(Board.#ELEMENT_CELL));
-        table.appendChild(headerRow);
+        headerRank.appendChild(document.createElement(Board.#ELEMENT_CELL));
+        table.appendChild(headerRank);
         for (let i = 0; i < size; i++) {
             this[i] = new Array(size);
-            const row = document.createElement(Board.#ELEMENT_ROW);
-            const headerColumn = document.createElement(Board.#ELEMENT_CELL);
-            headerColumn.appendChild(document.createTextNode(Board.#FORMAT_ROW(i)));
-            row.appendChild(headerColumn);
+            const rank = document.createElement(Board.#ELEMENT_RANK);
+            const headerFile = document.createElement(Board.#ELEMENT_CELL);
+            headerFile.appendChild(document.createTextNode(Board.#FORMAT_RANK(i)));
+            rank.appendChild(headerFile);
             for (let j = 0; j < size; j++) {
-                this[i][j] = new Square(row);
+                this[i][j] = new Square(rank);
             }
-            const footerColumn = document.createElement(Board.#ELEMENT_CELL);
-            footerColumn.appendChild(document.createTextNode(Board.#FORMAT_ROW(i)));
-            row.appendChild(footerColumn);
-            table.appendChild(row);
+            const footerFile = document.createElement(Board.#ELEMENT_CELL);
+            footerFile.appendChild(document.createTextNode(Board.#FORMAT_RANK(i)));
+            rank.appendChild(footerFile);
+            table.appendChild(rank);
         }
-        const footerRow = document.createElement(Board.#ELEMENT_ROW);
-        footerRow.appendChild(document.createElement(Board.#ELEMENT_CELL));
+        const footerRank = document.createElement(Board.#ELEMENT_RANK);
+        footerRank.appendChild(document.createElement(Board.#ELEMENT_CELL));
         for (let j = 0; j < size; j++) {
             const footerCell = document.createElement(Board.#ELEMENT_CELL);
-            footerCell.appendChild(document.createTextNode(Board.#FORMAT_COLUMN(j)));
-            footerRow.appendChild(footerCell);
+            footerCell.appendChild(document.createTextNode(Board.#FORMAT_FILE(j)));
+            footerRank.appendChild(footerCell);
         }
-        footerRow.appendChild(document.createElement(Board.#ELEMENT_CELL));
-        table.appendChild(footerRow);
+        footerRank.appendChild(document.createElement(Board.#ELEMENT_CELL));
+        table.appendChild(footerRank);
         document.body.appendChild(table);
     }
 
@@ -56,27 +53,27 @@ class Board extends Array {
         return score;
     }
 
-    capture(row, column, color) {
-        if (this[row][column].disk != null) {
+    capture(rank, file, color) {
+        if (this[rank][file].disk != null) {
             return [];
         }
         const result = [];
-        north: for (let i = row - 2; i >= 0; i--) {
-            if (this[i][column].disk == color) {
+        north: for (let i = rank - 2; i >= 0; i--) {
+            if (this[i][file].disk == color) {
                 const captives = [];
-                for (let k = row - 1; k > i; k--) {
-                    if ((this[k][column].disk == null) || (this[k][column].disk == color)) {
+                for (let k = rank - 1; k > i; k--) {
+                    if ((this[k][file].disk == null) || (this[k][file].disk == color)) {
                         break north;
                     }
-                    captives.push(this[k][column]);
+                    captives.push(this[k][file]);
                 }
                 result.push(...captives);
             }
         }
-        northEast: for (let i = row - 2, j = column + 2; (i >= 0) && (j < this[i].length); i--, j++) {
+        northEast: for (let i = rank - 2, j = file + 2; (i >= 0) && (j < this[i].length); i--, j++) {
             if (this[i][j].disk == color) {
                 const captives = [];
-                for (let k = row - 1, l = column + 1; (k > i) && (l < j); k--, l++) {
+                for (let k = rank - 1, l = file + 1; (k > i) && (l < j); k--, l++) {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break northEast;
                     }
@@ -85,22 +82,22 @@ class Board extends Array {
                 result.push(...captives);
             }
         }
-        east: for (let j = column + 2; j < this[row].length; j++) {
-            if (this[row][j].disk == color) {
+        east: for (let j = file + 2; j < this[rank].length; j++) {
+            if (this[rank][j].disk == color) {
                 const captives = [];
-                for (let k = column + 1; k < j; k++) {
-                    if ((this[row][k].disk == null) || (this[row][k].disk == color)) {
+                for (let k = file + 1; k < j; k++) {
+                    if ((this[rank][k].disk == null) || (this[rank][k].disk == color)) {
                         break east;
                     }
-                    captives.push(this[row][k]);
+                    captives.push(this[rank][k]);
                 }
                 result.push(...captives);
             }
         }
-        southEast: for (let i = row + 2, j = column + 2; (i < this.length) && (j < this[i].length); i++, j++) {
+        southEast: for (let i = rank + 2, j = file + 2; (i < this.length) && (j < this[i].length); i++, j++) {
             if (this[i][j].disk == color) {
                 const captives = [];
-                for (let k = row + 1, l = column + 1; (k < i) && (l < j); k++, l++) {
+                for (let k = rank + 1, l = file + 1; (k < i) && (l < j); k++, l++) {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break southEast;
                     }
@@ -109,22 +106,22 @@ class Board extends Array {
                 result.push(...captives);
             }
         }
-        south: for (let i = row + 2; i < this.length; i++) {
-            if (this[i][column].disk == color) {
+        south: for (let i = rank + 2; i < this.length; i++) {
+            if (this[i][file].disk == color) {
                 const captives = [];
-                for (let k = row + 1; k < i; k++) {
-                    if ((this[k][column].disk == null) || (this[k][column].disk == color)) {
+                for (let k = rank + 1; k < i; k++) {
+                    if ((this[k][file].disk == null) || (this[k][file].disk == color)) {
                         break south;
                     }
-                    captives.push(this[k][column]);
+                    captives.push(this[k][file]);
                 }
                 result.push(...captives);
             }
         }
-        southWest: for (let i = row + 2, j = column - 2; (i < this.length) && (j >= 0); i++, j--) {
+        southWest: for (let i = rank + 2, j = file - 2; (i < this.length) && (j >= 0); i++, j--) {
             if (this[i][j].disk == color) {
                 const captives = [];
-                for (let k = row + 1, l = column - 1; (k < i) && (l > j); k++, l--) {
+                for (let k = rank + 1, l = file - 1; (k < i) && (l > j); k++, l--) {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break southWest;
                     }
@@ -133,22 +130,22 @@ class Board extends Array {
                 result.push(...captives);
             }
         }
-        west: for (let j = column - 2; j >= 0; j--) {
-            if (this[row][j].disk == color) {
+        west: for (let j = file - 2; j >= 0; j--) {
+            if (this[rank][j].disk == color) {
                 const captives = [];
-                for (let k = column - 1; k > j; k--) {
-                    if ((this[row][k].disk == null) || (this[row][k].disk == color)) {
+                for (let k = file - 1; k > j; k--) {
+                    if ((this[rank][k].disk == null) || (this[rank][k].disk == color)) {
                         break west;
                     }
-                    captives.push(this[row][k]);
+                    captives.push(this[rank][k]);
                 }
                 result.push(...captives);
             }
         }
-        northWest: for (let i = row - 2, j = column - 2; (i >= 0) && (j >= 0); i--, j--) {
+        northWest: for (let i = rank - 2, j = file - 2; (i >= 0) && (j >= 0); i--, j--) {
             if (this[i][j].disk == color) {
                 const captives = [];
-                for (let k = row - 1, l = column - 1; (k > i) && (l > j); k--, l--) {
+                for (let k = rank - 1, l = file - 1; (k > i) && (l > j); k--, l--) {
                     if ((this[k][l].disk == null) || (this[k][l].disk == color)) {
                         break northWest;
                     }

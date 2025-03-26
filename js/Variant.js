@@ -16,7 +16,7 @@ const Variant = Object.freeze({
                 reversi.play(i, j, ply);
                 Variant.REVERSI.initialize(reversi, opponent, next);
             } else {
-                reversi.board.forEach((row, i) => row.forEach((square, j) => center
+                reversi.board.forEach((rank, i) => rank.forEach((square, j) => center
                         .some((sq) => (sq.i == i) && (sq.j = j)) ? square.enable((event) => {
                             reversi.play(i, j, ply);
                             Variant.REVERSI.initialize(reversi, opponent, next);
@@ -27,10 +27,10 @@ const Variant = Object.freeze({
         }
     }},
     OTHELLO: {name: 'Othello', initialize: (reversi, ply, next) => {
-        const centerRow = Math.floor(reversi.board.length / 2);
-        for (let i = centerRow - 1; i < centerRow + 1; i++) {
-            const centerColumn = Math.floor(reversi.board[i].length / 2);
-            for (let j = centerColumn - 1; j < centerColumn + 1; j++) {
+        const centerRank = Math.floor(reversi.board.length / 2);
+        for (let i = centerRank - 1; i < centerRank + 1; i++) {
+            const centerFile = Math.floor(reversi.board[i].length / 2);
+            for (let j = centerFile - 1; j < centerFile + 1; j++) {
                 reversi.board[i][j].disk = Object.values(Color)[(i + j + 1) % 2];
             }
         }

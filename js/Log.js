@@ -1,6 +1,6 @@
 class Log {
     static #ELEMENT_TEXTAREA = 'textarea';
-    static #FORMAT_PLY = (row, column) => (Reversi.FORMAT_COLUMN(column) + Reversi.FORMAT_ROW(row)).padEnd(4);
+    static #FORMAT_PLY = (rank, file) => (Reversi.FORMAT_FILE(file) + Reversi.FORMAT_RANK(rank)).padEnd(4);
     static #FORMAT_SCORE = (black, white) => `Score: ${black} - ${white}\n`; // TODO depending on ply, might need a new line before
     static #FORMAT_VARIANT = (variant) => `Variant: ${variant.name}\n`
     static #TEXT_PASS = 'pass';
@@ -19,9 +19,9 @@ class Log {
         this.#logMessage(Log.#FORMAT_VARIANT(variant));
     }
 
-    logPly(row, column, color) {
-        this.#logMessage(color.formatPly(this.#round, ((row == null) || (column == null))
-            ? Log.#TEXT_PASS : Log.#FORMAT_PLY(row, column)));
+    logPly(rank, file, color) {
+        this.#logMessage(color.formatPly(this.#round, ((rank == null) || (file == null))
+            ? Log.#TEXT_PASS : Log.#FORMAT_PLY(rank, file)));
         (color == Color.WHITE) && (this.#round++);
     }
 

@@ -1,6 +1,6 @@
 class Reversi {
-    static FORMAT_COLUMN = (column) => String.fromCharCode('a'.charCodeAt(0) + column);
-    static FORMAT_ROW = (row) => (row + 1).toString();
+    static FORMAT_FILE = (file) => String.fromCharCode('a'.charCodeAt(0) + file);
+    static FORMAT_RANK = (rank) => (rank + 1).toString();
 
     static #DISPLAY_NONE = 'none';
     static #PARAMETER_COLOR = 'color';
@@ -66,10 +66,10 @@ class Reversi {
         });
     }
 
-    play(row, column, color) {
-        this.board.capture(row, column, color).forEach((captive) => captive.disk = color);
-        this.board[row][column].disk = color;
-        this.#log.logPly(row, column, color);
+    play(rank, file, color) {
+        this.board.capture(rank, file, color).forEach((captive) => captive.disk = color);
+        this.board[rank][file].disk = color;
+        this.#log.logPly(rank, file, color);
     }
 
     #ply(color) {
@@ -96,11 +96,11 @@ class Reversi {
                 this.#ply(opponent);
             }
         } else if ((this.mode == Mode.SINGLE_PLAYER) && (this.color != color)) {
-            this.board.forEach((row) => row.forEach((square) => square.busy()));
+            this.board.forEach((rank) => rank.forEach((square) => square.busy()));
             this.play(captives[0].i, captives[0].j, color);
             this.#ply(opponent);
         } else {
-            this.board.forEach((row) => row.forEach((square) => square.disable()));
+            this.board.forEach((rank) => rank.forEach((square) => square.disable()));
             captives.forEach(({i, j}) => {
                 this.board[i][j].enable((event) => {
                     this.play(i, j, color);
