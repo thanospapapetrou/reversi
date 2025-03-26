@@ -15,7 +15,6 @@ class Reversi {
     static #SIZE = 8;
     // TODO timer
     // TODO constants cleanup
-    // TODO find why extra table in HTML
 
     #variant;
     #mode;
@@ -61,7 +60,9 @@ class Reversi {
 
     initialize() {
         this.#log.logVariant(this.#variant);
-        this.#variant.initialize(this.#board, this.#log, Color.BLACK,
-                () => this.#board.ply(this.#mode, this.#color, Color.BLACK, this.#log));
+        this.#variant.initialize(this.#board, this.#log, Color.BLACK, () => {
+            // TODO start timer
+            this.#board.ply(this.#mode, this.#color, Color.BLACK, this.#log);
+        });
     }
 }
