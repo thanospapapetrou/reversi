@@ -62,7 +62,45 @@ class Reversi {
         this.#log.logVariant(this.#variant);
         this.#variant.initialize(this.#board, this.#log, Color.BLACK, () => {
             // TODO start timer
-            this.#board.ply(this.#mode, this.#color, Color.BLACK, this.#log);
+            this.ply(this.#mode, this.#color, Color.BLACK);
         });
+    }
+
+    ply(mode, color, ply) {
+        const captives = [];
+        for (let i = 0; i < this.#board.length; i++) {
+            for (let j = 0; j < this.#board[i].length; j++) {
+                (this.#board.capture(i, j, ply).length > 0) && captives.push({i, j});
+            }
+        }
+        const next = (ply == Color.BLACK) ? Color.WHITE : Color.BLACK;
+        if (captives.length == 0) {
+            const captives = [];
+            for (let i = 0; i < this.#board.length; i++) {
+                for (let j = 0; j < this.#board[i].length; j++) {
+                    (this.#board.capture(i, j, next).length > 0) && captives.push({i, j});
+                }
+            }
+            if (captives.length == 0) {
+                    // TODO stop timer
+                    this.#log.logScore(this.#board.score(Color.BLACK), this.#board.score(Color.WHITE));
+                    // TODO alert
+            } else {
+                this.#log.logMove(null, null, ply);
+                this.ply(mode, color, next);
+            }
+        } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
+            this.#board.forEach((row) => row.forEach((square) => square.busy()));
+            this.#board.play(captives[0].i, captives[0].j, ply, this.#log);
+            this.ply(mode, color, next);
+        } else {
+            this.#board.forEach((row) => row.forEach((square) => square.disable()));
+            captives.forEach(({i, j}) => {
+                this.#board[i][j].enable((event) => {
+                    this.#board.play(i, j, ply, this.#log);
+                    this.ply(mode, color, next);
+                });
+            });
+        }
     }
 }

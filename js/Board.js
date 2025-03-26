@@ -43,51 +43,13 @@ class Board extends Array {
         document.body.appendChild(table);
     }
 
-    ply(mode, color, ply, log) {
-        const captives = [];
-        for (let i = 0; i < this.length; i++) {
-            for (let j = 0; j < this[i].length; j++) {
-                (this.#capture(i, j, ply).length > 0) && captives.push({i, j});
-            }
-        }
-        const next = (ply == Color.BLACK) ? Color.WHITE : Color.BLACK;
-        if (captives.length == 0) {
-            const captives = [];
-            for (let i = 0; i < this.length; i++) {
-                for (let j = 0; j < this[i].length; j++) {
-                    (this.#capture(i, j, next).length > 0) && captives.push({i, j});
-                }
-            }
-            if (captives.length == 0) {
-                    // TODO stop timer
-                    log.logScore(this.#score(Color.BLACK), this.#score(Color.WHITE));
-                    // TODO alert
-            } else {
-                log.logMove(null, null, ply);
-                this.ply(mode, color, next, log);
-            }
-        } else if ((mode == Mode.SINGLE_PLAYER) && (color != ply)) {
-            this.forEach((row) => row.forEach((square) => square.busy()));
-            this.play(captives[0].i, captives[0].j, ply, log);
-            this.ply(mode, color, next, log);
-        } else {
-            this.forEach((row) => row.forEach((square) => square.disable()));
-            captives.forEach(({i, j}) => {
-                this[i][j].enable((event) => {
-                    this.play(i, j, ply, log);
-                    this.ply(mode, color, next, log);
-                });
-            });
-        }
-    }
-
     play(row, column, color, log) {
-        this.#capture(row, column, color).forEach((captive) => captive.disk = color);
+        this.capture(row, column, color).forEach((captive) => captive.disk = color);
         this[row][column].disk = color;
         log.logMove(row, column, color);
     }
 
-    #score(color) {
+    score(color) {
         let score = 0;
         for (let i = 0; i < this.length; i++) {
             for (let j = 0; j < this[i].length; j++) {
@@ -97,7 +59,7 @@ class Board extends Array {
         return score;
     }
 
-    #capture(row, column, color) {
+    capture(row, column, color) {
         if (this[row][column].disk != null) {
             return [];
         }
