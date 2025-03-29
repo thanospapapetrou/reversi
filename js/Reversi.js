@@ -22,6 +22,7 @@ class Reversi {
     color;
     board;
     #log;
+    #score;
 
     static main() {
         const variant = Reversi.#getParameter(Reversi.#PARAMETER_VARIANT, Variant);
@@ -57,11 +58,13 @@ class Reversi {
         this.color = color;
         this.board = new Board(Reversi.#SIZE);
         this.#log = new Log();
+        new Label(variant.name);
+        this.#score = new Score();
     }
 
     initialize() {
-        this.#log.logVariant(this.variant);
         this.variant.initialize(this, Color.BLACK, () => {
+            this.#score.update(this.board.score(Color.BLACK), this.board.score(Color.WHITE));
             // TODO start timer
             this.#ply(Color.BLACK);
         });
@@ -70,7 +73,8 @@ class Reversi {
     play(rank, file, color) {
         this.board.capture(rank, file, color).forEach((captive) => captive.disk = color);
         this.board[rank][file].disk = color;
-        this.#log.logPly(rank, file, color);
+        this.#log.log(rank, file, color);
+        this.#score.update(this.board.score(Color.BLACK), this.board.score(Color.WHITE));
     }
 
     #ply(color) {
@@ -90,10 +94,9 @@ class Reversi {
             }
             if (captives.length == 0) {
                     // TODO stop timer
-                    this.#log.logScore(this.board.score(Color.BLACK), this.board.score(Color.WHITE));
                     // TODO alert
             } else {
-                this.#log.logPly(null, null, color);
+                this.#log.log(null, null, color);
                 this.#ply(opponent);
             }
         } else if ((this.mode == Mode.SINGLE_PLAYER) && (this.color != color)) {

@@ -2,5 +2,6 @@ const HtmlElement = Object.freeze({
     TABLE: 'table',
     ROW: 'tr',
     CELL: 'td',
-    TEXTAREA: 'textarea'
+    TEXTAREA: 'textarea',
+    PARAGRAPH: 'p'
 });
