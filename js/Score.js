@@ -1,5 +1,5 @@
 class Score {
-    static #FORMAT_SCORE = (black, white) => `${black} - ${white}`;
+    static #FORMAT = (black, white) => `${black} - ${white}`;
 
     #score;
 
@@ -11,6 +11,6 @@ class Score {
     }
 
     update(black, white) {
-        this.#score.nodeValue = Score.#FORMAT_SCORE(black, white);
+        this.#score.nodeValue = Score.#FORMAT(black, white);
     }
 }

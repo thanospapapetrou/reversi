@@ -13,7 +13,6 @@ class Reversi {
     static #SELECTOR_MODE = 'select#mode';
     static #SELECTOR_VARIANT = 'select#variant';
     static #SIZE = 8;
-    // TODO timer
     // TODO alphaBeta
     // TODO highlights
 
@@ -23,6 +22,7 @@ class Reversi {
     board;
     #log;
     #score;
+    #timer;
 
     static main() {
         const variant = Reversi.#getParameter(Reversi.#PARAMETER_VARIANT, Variant);
@@ -60,12 +60,13 @@ class Reversi {
         this.#log = new Log();
         new Label(variant.name);
         this.#score = new Score();
+        this.#timer = new Timer();
     }
 
     initialize() {
         this.variant.initialize(this, Color.BLACK, () => {
             this.#score.update(this.board.score(Color.BLACK), this.board.score(Color.WHITE));
-            // TODO start timer
+            this.#timer.start();
             this.#ply(Color.BLACK);
         });
     }
@@ -93,7 +94,7 @@ class Reversi {
                 }
             }
             if (captives.length == 0) {
-                    // TODO stop timer
+                    this.#timer.stop();
                     // TODO alert
             } else {
                 this.#log.log(null, null, color);
