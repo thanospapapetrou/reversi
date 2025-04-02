@@ -18,6 +18,7 @@ class Reversi {
     variant;
     mode;
     color;
+    difficulty;
     board;
     #log;
     #score;
@@ -55,6 +56,7 @@ class Reversi {
         this.variant = variant;
         this.mode = mode;
         this.color = color;
+        this.difficulty = difficulty;
         this.board = new Board(Reversi.#SIZE);
         this.#log = new Log();
         new Label(variant.name);
@@ -91,7 +93,7 @@ class Reversi {
             }
         } else if ((this.mode == Mode.SINGLE_PLAYER) && (this.color != color)) {
             this.board.forEach((rank) => rank.forEach((square) => square.busy()));
-            const alphaBeta = this.#alphaBeta(this.board, 32, -Infinity, Infinity, color);
+            const alphaBeta = this.#alphaBeta(this.board, this.difficulty, -Infinity, Infinity, color);
             this.play(alphaBeta.rank, alphaBeta.file, color);
             this.#ply(opponent);
         } else {

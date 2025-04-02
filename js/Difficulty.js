@@ -1,4 +1,6 @@
 const Difficulty = Object.freeze({
-    EASY: 'easy',
-    HARD: 'hard'
+    EASY: 1,
+    MEDIUM: 2,
+    HARD: 4,
+    INSANE: 8
 });
