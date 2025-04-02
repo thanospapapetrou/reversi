@@ -3,6 +3,12 @@ class Reversi {
     static FORMAT_RANK = (rank) => (rank + 1).toString();
 
     static #DISPLAY_NONE = 'none';
+    static #MESSAGE_DRAW = 'It\'s a draw';
+    static #MESSAGE_WIN = (mode, color, score) => (mode == Mode.SINGLE_PLAYER)
+            ? ((score * color.score > 0) ? `You (${color.name}) win!`
+                    : `Computer (${((color == Color.BLACK) ? Color.WHITE : Color.BLACK).name}) wins!`)
+            : ((score * Color.BLACK.score > 0) ? `Player 1 (${Color.BLACK.name}) wins!`
+                    : `Player 2 (${Color.WHITE.name}) wins!`);
     static #PARAMETER_COLOR = 'color';
     static #PARAMETER_DIFFICULTY = 'difficulty';
     static #PARAMETER_MODE = 'mode';
@@ -86,7 +92,8 @@ class Reversi {
             const captives = this.board.getPossibilities(opponent);
             if (captives.length == 0) {
                     this.#timer.stop();
-                    // TODO alert
+                    const score = this.board.score(Color.BLACK) - this.board.score(Color.WHITE);
+                    alert((score == 0) ? Reversi.#MESSAGE_DRAW : Reversi.#MESSAGE_WIN(this.mode, this.color, score));
             } else {
                 this.#log.log(null, null, color);
                 this.#ply(opponent);
