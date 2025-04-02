@@ -13,7 +13,6 @@ class Reversi {
     static #SELECTOR_MODE = 'select#mode';
     static #SELECTOR_VARIANT = 'select#variant';
     static #SIZE = 8;
-    // TODO alphaBeta
     // TODO highlights
 
     variant;
@@ -79,20 +78,10 @@ class Reversi {
     }
 
     #ply(color) {
-        const captives = [];
-        for (let i = 0; i < this.board.length; i++) {
-            for (let j = 0; j < this.board[i].length; j++) {
-                (this.board.capture(i, j, color).length > 0) && captives.push({i, j});
-            }
-        }
+        const captives =this.board.captureAll(color);
         const opponent = (color == Color.BLACK) ? Color.WHITE : Color.BLACK;
         if (captives.length == 0) {
-            const captives = [];
-            for (let i = 0; i < this.board.length; i++) {
-                for (let j = 0; j < this.board[i].length; j++) {
-                    (this.board.capture(i, j, opponent).length > 0) && captives.push({i, j});
-                }
-            }
+            const captives = this.board.captureAll(opponent);
             if (captives.length == 0) {
                     this.#timer.stop();
                     // TODO alert
@@ -102,7 +91,8 @@ class Reversi {
             }
         } else if ((this.mode == Mode.SINGLE_PLAYER) && (this.color != color)) {
             this.board.forEach((rank) => rank.forEach((square) => square.busy()));
-            this.play(captives[0].i, captives[0].j, color);
+            const alphaBeta = this.#alphaBeta(this.board, 32, -Infinity, Infinity, color);
+            this.play(alphaBeta.rank, alphaBeta.file, color);
             this.#ply(opponent);
         } else {
             this.board.forEach((rank) => rank.forEach((square) => square.disable()));
@@ -113,5 +103,78 @@ class Reversi {
                 });
             });
         }
+    }
+
+    #alphaBeta(board, depth, a, b, color) {
+        if ((depth == 0) || board.terminal) {
+            return {file: null, rank: null, score: board.score(Color.BLACK) - board.score(Color.WHITE)};
+        }
+        const possibilities = board.captureAll(color); // TODO rename captureAll results to possibilities
+        if (color == Color.BLACK) {
+            let rank = null;
+            let file = null;
+            let score = -Infinity;
+            for (let {i, j} of possibilities) {
+                const child = this.#copyBoard(board);
+                child.capture(i, j, color).forEach((captive) => captive.disk = color);
+                child[i][j].disk = color;
+                rank = i;
+                file = j;
+                score = Math.max(score, this.#alphaBeta(child, depth - 1, a, b, Color.WHITE).score);
+                if (score > b) {
+                    break;
+                }
+                a = Math.max(a, score);
+            }
+            if (possibilities.length == 0) {
+                score = Math.max(score, this.#alphaBeta(board, depth - 1, a, b, Color.WHITE).score);
+            }
+            return {rank, file, score};
+        } else {
+            let rank = null;
+            let file = null;
+            let score = Infinity;
+            for (let {i, j} of possibilities) {
+                const child = this.#copyBoard(board);
+                child.capture(i, j, color).forEach((captive) => captive.disk = color);
+                child[i][j].disk = color;
+                rank = i;
+                file = j;
+                score = Math.min(score, this.#alphaBeta(child, depth - 1, a, b, Color.BLACK).score);
+                if (score < a) {
+                    break;
+                }
+                b = Math.min(b, score);
+            }
+            if (possibilities.length == 0) {
+                score = Math.min(score, this.#alphaBeta(board, depth - 1, a, b, Color.BLACK).score);
+            }
+            return {rank, file, score};
+        }
+    }
+
+    #copyBoard(board) {
+        const newBoard = [];
+        for (let rank of board) {
+            const newRank = [];
+            for (let file of rank) {
+                newRank.push({disk: file.disk});
+            }
+            newBoard.push(newRank);
+        }
+        const that = this;
+        newBoard.capture = function() {
+            return that.board.capture.apply(newBoard, [].slice.call(arguments, 0));
+        };
+        newBoard.captureAll = function() {
+            return that.board.captureAll.apply(newBoard, [].slice.call(arguments, 0));
+        };
+        newBoard.score = function() {
+            return that.board.score.apply(newBoard, [].slice.call(arguments, 0));
+        };
+        newBoard.terminal = function() {
+            return that.board.terminal.apply(newBoard, [].slice.call(arguments, 0));
+        };
+        return newBoard;
     }
 }

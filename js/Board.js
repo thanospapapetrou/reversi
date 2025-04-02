@@ -37,6 +37,10 @@ class Board extends Array {
         document.body.appendChild(table);
     }
 
+    get terminal() {
+        return (this.captureAll(Color.BLACK).length == 0) && (this.captureAll(Color.WHITE).length == 0);
+    }
+
     score(color) {
         let score = 0;
         for (let i = 0; i < this.length; i++) {
@@ -45,6 +49,16 @@ class Board extends Array {
             }
         }
         return score;
+    }
+
+    captureAll(color) {
+        const captives = [];
+        for (let i = 0; i < this.length; i++) {
+            for (let j = 0; j < this[i].length; j++) {
+                (this.capture(i, j, color).length > 0) && captives.push({i, j});
+            }
+        }
+        return captives;
     }
 
     capture(rank, file, color) {
