@@ -21,6 +21,18 @@ td.board {
     border: 1px solid black;
 }
 
+td.board.possible {
+    background-color: lightgreen;
+}
+
+td.board.possible.best {
+    border: 5px solid black;
+}
+
+td.board.captive {
+    background-color: lightyellow;
+}
+
 textarea {
     float: left;
     margin: 15px;

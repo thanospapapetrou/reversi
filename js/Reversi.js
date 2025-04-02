@@ -11,20 +11,23 @@ class Reversi {
                     : `Player 2 (${Color.WHITE.name}) wins!`);
     static #PARAMETER_COLOR = 'color';
     static #PARAMETER_DIFFICULTY = 'difficulty';
+    static #PARAMETER_HINTS = 'hints';
     static #PARAMETER_MODE = 'mode';
     static #PARAMETER_VARIANT = 'variant';
     static #SELECTOR_COLOR = 'select#color';
     static #SELECTOR_DIFFICULTY = 'select#difficulty';
     static #SELECTOR_FORM = 'form';
+    static #SELECTOR_HINTS = 'select#hints';
     static #SELECTOR_MODE = 'select#mode';
     static #SELECTOR_VARIANT = 'select#variant';
     static #SIZE = 8;
-    // TODO highlights
+    // TODO antireversi
 
     variant;
     mode;
     color;
     difficulty;
+    hints;
     board;
     #log;
     #score;
@@ -35,15 +38,18 @@ class Reversi {
         const mode = Reversi.#getParameter(Reversi.#PARAMETER_MODE, Mode);
         const color = Reversi.#getParameter(Reversi.#PARAMETER_COLOR, Color);
         const difficulty = Reversi.#getParameter(Reversi.#PARAMETER_DIFFICULTY, Difficulty);
+        const hints = Reversi.#getParameter(Reversi.#PARAMETER_HINTS, Hints);
         (variant != null) && (document.querySelector(Reversi.#SELECTOR_VARIANT).value = variant);
         (mode != null) && (document.querySelector(Reversi.#SELECTOR_MODE).value = mode);
         (color != null) && (document.querySelector(Reversi.#SELECTOR_COLOR).value = color);
         (difficulty != null) && (document.querySelector(Reversi.#SELECTOR_DIFFICULTY).value = difficulty);
+        (hints != null) && (document.querySelector(Reversi.#SELECTOR_HINTS).value = hints);
         Reversi.toggleColorDifficulty();
         if ((variant != null) && (mode != null) && ((Mode[mode] == Mode.TWO_PLAYERS) || ((color != null)
                 && (difficulty != null)))) {
             document.querySelector(Reversi.#SELECTOR_FORM).style.display = Reversi.#DISPLAY_NONE;
-            new Reversi(Variant[variant], Mode[mode], Color[color], Difficulty[difficulty]).initialize();
+            new Reversi(Variant[variant], Mode[mode], Color[color], Difficulty[difficulty], Hints[hints] || Hints.NONE)
+                    .initialize();
         }
     }
 
@@ -58,11 +64,12 @@ class Reversi {
         return Object.keys(enumeration).includes(value) ? value : null;
     }
 
-    constructor(variant, mode, color, difficulty) {
+    constructor(variant, mode, color, difficulty, hints) {
         this.variant = variant;
         this.mode = mode;
         this.color = color;
         this.difficulty = difficulty;
+        this.hints = hints;
         this.board = new Board(Reversi.#SIZE);
         this.#log = new Log();
         new Label(variant.name);
@@ -93,6 +100,7 @@ class Reversi {
             if (captives.length == 0) {
                     this.#timer.stop();
                     const score = this.board.score(Color.BLACK) - this.board.score(Color.WHITE);
+                    this.board.forEach((rank) => rank.forEach((square => square.disable())));
                     alert((score == 0) ? Reversi.#MESSAGE_DRAW : Reversi.#MESSAGE_WIN(this.mode, this.color, score));
             } else {
                 this.#log.log(null, null, color);
@@ -106,11 +114,15 @@ class Reversi {
         } else {
             this.board.forEach((rank) => rank.forEach((square) => square.disable()));
             captives.forEach(({i, j}) => {
-                this.board[i][j].enable((event) => {
+                this.board[i][j].enable(this.hints, this.board.capture(i, j, color), (event) => {
                     this.play(i, j, color);
                     this.#ply(opponent);
                 });
             });
+            if (this.hints >= Hints.BEST) {
+                const alphaBeta = this.#alphaBeta(this.board, this.difficulty, -Infinity, Infinity, color);
+                this.board[alphaBeta.rank][alphaBeta.file].setBest();
+            }
         }
     }
 

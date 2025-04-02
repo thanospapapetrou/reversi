@@ -11,6 +11,7 @@
         <script src="./js/Color.js"></script>
         <script src="./js/CssCursor.js"></script>
         <script src="./js/Difficulty.js"></script>
+        <script src="./js/Hints.js"></script>
         <script src="./js/HtmlElement.js"></script>
         <script src="./js/Label.js"></script>
         <script src="./js/Log.js"></script>
@@ -48,6 +49,14 @@
                 <option value="MEDIUM">Medium</option>
                 <option value="HARD">Hard</option>
                 <option value="INSANE">Insane</option>
+            </select>
+            <br />
+            <label for="hints">Hints:</label>
+            <select id="hints" name="hints">
+                <option value="NONE">None</option>
+                <option value="POSSIBLE">Possible Moves</option>
+                <option value="CAPTIVES">Possible Moves & Captives</option>
+                <option value="BEST">Possible Moves, Captives & Best Move</option>
             </select>
             <br />
             <input type="submit" value="Start" autofocus="autofocus" />

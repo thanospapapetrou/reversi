@@ -17,7 +17,7 @@ const Variant = Object.freeze({
                 Variant.REVERSI.initialize(reversi, opponent, next);
             } else {
                 reversi.board.forEach((rank, i) => rank.forEach((square, j) => center
-                        .some((sq) => (sq.i == i) && (sq.j = j)) ? square.enable((event) => {
+                        .some((sq) => (sq.i == i) && (sq.j == j)) ? square.enable(reversi.hints, [], (event) => {
                             reversi.play(i, j, ply);
                             Variant.REVERSI.initialize(reversi, opponent, next);
                         }) : square.disable()));
