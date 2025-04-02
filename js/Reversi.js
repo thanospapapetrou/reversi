@@ -78,10 +78,10 @@ class Reversi {
     }
 
     #ply(color) {
-        const captives =this.board.captureAll(color);
+        const captives =this.board.getPossibilities(color);
         const opponent = (color == Color.BLACK) ? Color.WHITE : Color.BLACK;
         if (captives.length == 0) {
-            const captives = this.board.captureAll(opponent);
+            const captives = this.board.getPossibilities(opponent);
             if (captives.length == 0) {
                     this.#timer.stop();
                     // TODO alert
@@ -109,7 +109,7 @@ class Reversi {
         if ((depth == 0) || board.terminal) {
             return {file: null, rank: null, score: board.score(Color.BLACK) - board.score(Color.WHITE)};
         }
-        const possibilities = board.captureAll(color); // TODO rename captureAll results to possibilities
+        const possibilities = board.getPossibilities(color);
         if (color == Color.BLACK) {
             let rank = null;
             let file = null;
@@ -166,8 +166,8 @@ class Reversi {
         newBoard.capture = function() {
             return that.board.capture.apply(newBoard, [].slice.call(arguments, 0));
         };
-        newBoard.captureAll = function() {
-            return that.board.captureAll.apply(newBoard, [].slice.call(arguments, 0));
+        newBoard.getPossibilities = function() {
+            return that.board.getPossibilities.apply(newBoard, [].slice.call(arguments, 0));
         };
         newBoard.score = function() {
             return that.board.score.apply(newBoard, [].slice.call(arguments, 0));

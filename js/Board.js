@@ -38,7 +38,7 @@ class Board extends Array {
     }
 
     get terminal() {
-        return (this.captureAll(Color.BLACK).length == 0) && (this.captureAll(Color.WHITE).length == 0);
+        return (this.getPossibilities(Color.BLACK).length == 0) && (this.getPossibilities(Color.WHITE).length == 0);
     }
 
     score(color) {
@@ -51,7 +51,7 @@ class Board extends Array {
         return score;
     }
 
-    captureAll(color) {
+    getPossibilities(color) {
         const captives = [];
         for (let i = 0; i < this.length; i++) {
             for (let j = 0; j < this[i].length; j++) {
