@@ -1,5 +1,5 @@
 const Variant = Object.freeze({
-    REVERSI: {name: 'Reversi', initialize: (reversi, ply, next) => {
+    REVERSI: {name: 'Reversi', score: 1, initialize: (reversi, ply, next) => {
         const center = [];
         for (let i = 0; i < reversi.board.length; i++) {
             for (let j = 0; j < reversi.board[i].length; j++) {
@@ -26,7 +26,7 @@ const Variant = Object.freeze({
             next();
         }
     }},
-    OTHELLO: {name: 'Othello', initialize: (reversi, ply, next) => {
+    OTHELLO: {name: 'Othello', score: 1, initialize: (reversi, ply, next) => {
         const centerRank = Math.floor(reversi.board.length / 2);
         for (let i = centerRank - 1; i < centerRank + 1; i++) {
             const centerFile = Math.floor(reversi.board[i].length / 2);
@@ -35,5 +35,7 @@ const Variant = Object.freeze({
             }
         }
         next();
-    }}
+    }},
+    ANTI_REVERSI: {name: 'Anti-Reversi', score: -1, initialize: (reversi, ply, next) =>
+        Variant.REVERSI.initialize(reversi, ply, next)}
 });

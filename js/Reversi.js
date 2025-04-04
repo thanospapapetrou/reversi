@@ -4,10 +4,10 @@ class Reversi {
 
     static #DISPLAY_NONE = 'none';
     static #MESSAGE_DRAW = 'It\'s a draw';
-    static #MESSAGE_WIN = (mode, color, score) => (mode == Mode.SINGLE_PLAYER)
-            ? ((score * color.score > 0) ? `You (${color.name}) win!`
+    static #MESSAGE_WIN = (variant, mode, color, score) => (mode == Mode.SINGLE_PLAYER)
+            ? ((score * variant.score * color.score > 0) ? `You (${color.name}) win!`
                     : `Computer (${((color == Color.BLACK) ? Color.WHITE : Color.BLACK).name}) wins!`)
-            : ((score * Color.BLACK.score > 0) ? `Player 1 (${Color.BLACK.name}) wins!`
+            : ((score * variant.score * Color.BLACK.score > 0) ? `Player 1 (${Color.BLACK.name}) wins!`
                     : `Player 2 (${Color.WHITE.name}) wins!`);
     static #PARAMETER_COLOR = 'color';
     static #PARAMETER_DIFFICULTY = 'difficulty';
@@ -101,7 +101,8 @@ class Reversi {
                     this.#timer.stop();
                     const score = this.board.score(Color.BLACK) - this.board.score(Color.WHITE);
                     this.board.forEach((rank) => rank.forEach((square => square.disable())));
-                    alert((score == 0) ? Reversi.#MESSAGE_DRAW : Reversi.#MESSAGE_WIN(this.mode, this.color, score));
+                    alert((score == 0) ? Reversi.#MESSAGE_DRAW
+                            : Reversi.#MESSAGE_WIN(this.variant, this.mode, this.color, score));
             } else {
                 this.#log.log(null, null, color);
                 this.#ply(opponent);
@@ -128,7 +129,8 @@ class Reversi {
 
     #alphaBeta(board, depth, a, b, color) {
         if ((depth == 0) || board.terminal) {
-            return {file: null, rank: null, score: board.score(Color.BLACK) - board.score(Color.WHITE)};
+            return {file: null, rank: null,
+                    score: this.variant.score * (board.score(Color.BLACK) - board.score(Color.WHITE))};
         }
         const possibilities = board.getPossibilities(color);
         if (color == Color.BLACK) {
